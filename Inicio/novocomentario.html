@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+        <meta name="description" content="" />
+        <meta name="author" content="" />
+        <title>Bare - Start Bootstrap Template</title>
+        <!-- Favicon-->
+        <link rel="icon" type="image/x-icon" href="assets/favicon.ico" />
+        <!-- Core theme CSS (includes Bootstrap)-->
+        <link href="inicioTEMPLATE.css" rel="stylesheet" />
+        <style>
+            /*isso aq serve pra botar os elemento que criei la embaixo pro meio da tela*/
+            .centralizar-tela {
+                display: flex;
+                justify-content: center;
+                padding-bottom: 150px;
+                height: calc(100vh - 56px);
+            }
+            /*isso aqui serve pra controlar largura da barra de pesquisa*/
+            .input-largo {
+                width: 500px;
+            }
+            /*pra diminuir o espaçamento entre os 2 elementos*/
+            .espaco-label {
+                margin-right: 0px;
+            }
+        </style>
+    </head>
+    <body>
+        <!-- Responsive navbar-->
+        <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+            <div class="container">
+                <a class="navbar-brand" href="#">Projeto Insano</a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation"><span class="navbar-toggler-icon"></span></button>
+                <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                    <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
+                        <li class="nav-item"><a class="nav-link" href="inicio.html">Inicio</a></li>
+                        <li class="nav-item"><a class="nav-link active" aria-current="page" href="#">Novo Comentário</a></li>
+                        <li class="nav-item"><a class="nav-link" href="loguin.html">Usuario</a></li>
+                        <li class="nav-item dropdown">
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+        <!-- Page content-->
+        <div class="container centralizar-tela">
+            <div class="row justify-content-center align-items-center w-100">
+                <div class="col-12 col-md-auto mb-2 mb-md-0 d-flex justify-content-center justify-content-md-end">
+                    <label for="buscaAlbum" class="form-label mb-0 espaco-label">Procure o Álbum que gostaria:</label>
+                </div>
+                <div class="col-12 col-md-6">
+                    <input type="text" id="buscaAlbum" class="form-control form-control-lg input-largo w-100" placeholder="Digite o nome do álbum:">
+                </div>
+            </div>
+        </div>
+        <!-- Bootstrap core JS-->
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
+        <!-- Core theme JS-->
+        <script src="js/scripts.js"></script>
+    </body>
+</html>
