@@ -1,0 +1,19 @@
+tela do perfil✅
+tela de escrever resenha
+tela do album (e ler resenhas)[adicionar bandeirinha para report de usuario em cada comentario]
+tela do album de adm (pode banir comentario e dar timeout no usuario)
+
+ações do usuario:
+adicionar album (foto e descrição)
+denunciar usuario/comentario
+pode solicitar o desbanimento após ser banido?
+
+ações de adm:
+ver lista de denúncias feitas
+timeout/banimento de contas
+
+
+opcionais que pensei:
+Usuarios fazerem amizades, entao teria que ter mais telas:
+tela de conexoes com usuarios
+tela de aceitar conexao
