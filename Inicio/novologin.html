@@ -11,12 +11,22 @@
         <!-- Core theme CSS (includes Bootstrap)-->
         <link href="inicioTEMPLATE.css" rel="stylesheet" />
         <link rel="stylesheet" href="https://unpkg.com/bootstrap@5.3.3/dist/css/bootstrap.min.css">
+        <!-- isso aqui serve pra fonte-->
+        <link href="https://fonts.googleapis.com/css2?family=Medula+One&display=swap" rel="stylesheet">
     </head>
     <body>
+        <style>
+            body {
+                background-color: #ac9bc3;
+            }
+        </style>
         <!-- Responsive navbar-->
-        <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <nav class="navbar navbar-expand-lg navbar-dark" style="background-color: #170045;">
             <div class="container">
-                <a class="navbar-brand" href="#">Projeto Insano</a>
+                <a class="navbar-brand" href="#" style="position: relative; display: inline-block; font-family: 'Medula One', sans-serif; font-size: 40px;">
+                        <img src="img/discosemfundo.png" alt="Logo" style="height: 57px; position: absolute; top: 7px; left: 0; z-index: 0;">
+                        <span style="position: relative; z-index: 1; color: white; right: 15px;">anthems</span>
+                    </a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation"><span class="navbar-toggler-icon"></span></button>
                 <div class="collapse navbar-collapse" id="navbarSupportedContent">
                     <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
@@ -73,7 +83,7 @@
                         <div class="col-12">
                         <div class="form-floating mb-3">
                           <input type="email" class="form-control" name="email" id="email" placeholder="name@example.com" required>
-                          <label for="email" class="form-label">Nome de</label>
+                          <label for="email" class="form-label">Nome de Usuário</label>
                         </div>
                       </div>
                       <div class="col-12">

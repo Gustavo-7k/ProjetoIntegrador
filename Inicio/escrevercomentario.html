@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Adicionar Review</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #f8f9fa;
+            font-family: 'Arial', sans-serif;
+        }
+        .navbar-brand {
+            font-weight: bold;
+            font-size: 24px;
+        }
+        .review-container {
+            max-width: 800px;
+            margin: 40px auto;
+            padding: 30px;
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .album-title {
+            font-size: 28px;
+            font-weight: bold;
+            margin-bottom: 20px;
+            color: #170045;
+        }
+        .form-label {
+            font-weight: 500;
+        }
+        .btn-post {
+            background-color: #170045;
+            color: white;
+            font-weight: bold;
+            padding: 10px 25px;
+        }
+        .btn-post:hover {
+            background-color: #0f0033;
+            color: white;
+        }
+        .nav-link.active {
+            font-weight: bold;
+            color: #170045 !important;
+        }
+        .char-count {
+            text-align: right;
+            font-size: 0.8rem;
+            color: #6c757d;
+            margin-top: 5px;
+        }
+        .char-count.warning {
+            color: #dc3545;
+        }
+    </style>
+</head>
+<body>
+    <!-- Barra de navegação -->
+    <nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm">
+        <div class="container">
+            <a class="navbar-brand" href="#">NOME DO SITE</a>
+            <div class="collapse navbar-collapse">
+                <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
+                    <li class="nav-item">
+                        <a class="nav-link active" href="#">NOVO COMENTARIO</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">CONEXÕES</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">USUÁRIO</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Conteúdo principal -->
+    <div class="container">
+        <div class="review-container">
+            <div class="album-title">NOME DO ÁLBUM</div>
+            
+            <form>
+                <div class="mb-4">
+                    <label for="reviewText" class="form-label">ADICIONAR REVIEW</label>
+                    <textarea class="form-control" id="reviewText" rows="5" placeholder="Digite sua opinião sobre o álbum..." maxlength="500"></textarea>
+                    <div id="charCount" class="char-count">0/500 caracteres</div>
+                </div>
+                
+                <div class="mb-4">
+                    <label for="rating" class="form-label">DIGITE A NOTA (0.0-10.0)</label>
+                    <input type="number" class="form-control" id="rating" min="0" max="10" step="0.1" placeholder="0.0">
+                    <small class="text-muted">Use valores como 7.5, 8.0, 9.5 etc.</small>
+                </div>
+                
+                <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                    <button type="submit" class="btn btn-post">POSTAR</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Contador de caracteres
+        const reviewText = document.getElementById('reviewText');
+        const charCount = document.getElementById('charCount');
+        
+        reviewText.addEventListener('input', function() {
+            const currentLength = this.value.length;
+            charCount.textContent = `${currentLength}/500 caracteres`;
+            
+            if (currentLength > 450) {
+                charCount.classList.add('warning');
+            } else {
+                charCount.classList.remove('warning');
+            }
+        });
+        
+        // Validação da nota
+        const ratingInput = document.getElementById('rating');
+        
+        ratingInput.addEventListener('change', function() {
+            let value = parseFloat(this.value);
+            
+            if (isNaN(value)) {
+                this.value = '';
+                return;
+            }
+            
+            // Arredonda para 1 casa decimal
+            value = Math.round(value * 10) / 10;
+            
+            // Garante que está entre 0 e 10
+            if (value < 0) value = 0;
+            if (value > 10) value = 10;
+            
+            this.value = value.toFixed(1);
+        });
+    </script>
+</body>
+</html>
