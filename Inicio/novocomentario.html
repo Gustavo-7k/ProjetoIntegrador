@@ -47,7 +47,7 @@
                 <div class="collapse navbar-collapse" id="navbarSupportedContent">
                     <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
                         <li class="nav-item"><a class="nav-link" href="inicio.html">Inicio</a></li>
-                        <li class="nav-item"><a class="nav-link" href="Vercomentario.html">Conexões</a></li>
+                        <li class="nav-item"><a class="nav-link" href="VerComentariosConexoes.html">Conexões</a></li>
                         <li class="nav-item"><a class="nav-link active" aria-current="page" href="#">Novo Comentário</a></li>
                         <li class="nav-item"><a class="nav-link" href="perfil.html">Usuario</a></li>
                         <li class="nav-item dropdown">
@@ -63,8 +63,22 @@
                     <label for="buscaAlbum" class="form-label mb-0 espaco-label">Procure o Álbum que gostaria:</label>
                 </div>
                 <div class="col-12 col-md-6">
-                    <input type="text" id="buscaAlbum" class="form-control form-control-lg input-largo w-100" placeholder="Digite o nome do álbum:">
+                    <select class="form-select" aria-label="Default select example">
+                    <option selected>procure seu album</option>
+                    <option value="EscreverComentario.html">In Rainbows</option>
+                    <option value="2">Kid A</option>
+                    <option value="3">Ok Computer</option>
+                    </select>                
                 </div>
+                <!--levar para outra pagina-->
+                <script>
+                    document.getElementById("albumSelect").addEventListener("change", function () {
+                        const selectedValue = this.value;
+                        if (selectedValue) {
+                        window.location.href = selectedValue;
+                        }
+                    });
+                </script>
             </div>
         </div>
         <!-- Bootstrap core JS-->

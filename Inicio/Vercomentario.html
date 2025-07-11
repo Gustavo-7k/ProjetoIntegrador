@@ -44,7 +44,7 @@
       }
       
       .centered-container {
-        max-width: 800px;
+        max-width: 1100px;
         margin: 40px auto;
         padding: 30px;
         background-color: white;
@@ -74,7 +74,7 @@
       }
       
       .review-section {
-        margin: 30px 0;
+        flex: 1; /* ocupa todo o resto do espaço */
         padding: 20px;
         background-color: #f8f9fa;
         border-radius: 8px;
@@ -107,6 +107,7 @@
         padding: 15px;
         border: 1px solid #ced4da;
         border-radius: 4px;
+        resize: vertical;
         min-height: 100px;
         margin-bottom: 15px;
       }
@@ -152,36 +153,52 @@
         text-align: right;
         margin-top: 5px;
       }
-      
-      .navbar-brand {
-        font-family: 'Medula One', sans-serif;
-        font-size: 40px;
+      .album-review-container {
+        display: flex;
+        gap: 30px;
+        align-items: flex-start;
+        flex-wrap: wrap;
       }
-      
-      .nav-link.active {
+
+      .album-side {
+        flex: 0 0 280px; /* largura fixa da imagem + título */
+        text-align: center;
+      }
+
+      .album-cover {
+        width: 250px;
+        height: 250px;
+        object-fit: cover;
+        border-radius: 8px;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+        margin-bottom: 10px;
+      }
+
+      .album-title {
+        font-size: 24px;
         font-weight: bold;
       }
     </style>
     <div class="centered-container">
       <!-- Album info -->
-      <div class="album-header">
-        <img src="img/InRainbows.jpeg" alt="In Rainbows" class="album-cover">
-        <div class="album-title">IN RAINBOWS</div>
-      </div>
-      
-      <!-- Review section -->
-      <div class="review-section">
-        <div class="review-author">FORTA RESENHA</div>
-        <div class="review-content">
-          <p>RADIOHEAD</p>
-          <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam auctor, nisl eget ultricies tincidunt, nisl nisl aliquam nisl, eget ultricies nisl nisl eget nisl.</p>
-          <p>Vivamus auctor, nisl eget ultricies tincidunt, nisl nisl aliquam nisl, eget ultricies nisl nisl eget nisl.</p>
+      <div class="album-review-container">
+        <div class="album-side">
+          <img src="img/InRainbows.jpeg" alt="In Rainbows" class="album-cover">
+          <div class="album-title">In Rainbows</div>
+        </div>
+        <!-- comentario info -->
+        <div class="review-section">
+          <div class="review-author">Comentário</div>
+          <div class="review-content">
+            <p>RADIOHEAD</p>
+            <p>A experiência de ouvir In Rainbows pela primeira vez foi única. A faixa "Weird Fishes/Arpeggi" é uma jornada sonora incrível. O álbum mostra o Radiohead em seu melhor momento, equilibrando experimentalismo com acessibilidade. A seção rítmica de "15 Step" é hipnótica, enquanto "Reckoner" apresenta uma das melhores performances vocais de Yorke. O jeito como as guitarras se entrelaçam em "Jigsaw Falling Into Place" é pura magia. Um álbum que recompensa ouvidos atentos com cada nova audição.</p>
+          </div>
         </div>
       </div>
       
       <!-- Discussion section -->
       <div class="discussion-section">
-        <div class="discussion-title">Discussão</div>
+        <div class="discussion-title">Fórum</div>
         
         <!-- Comment form -->
         <form class="comment-form">
