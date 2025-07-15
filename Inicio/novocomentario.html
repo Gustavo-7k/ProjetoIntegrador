@@ -62,24 +62,32 @@
                 <div class="col-12 col-md-auto mb-2 mb-md-0 d-flex justify-content-center justify-content-md-end">
                     <label for="buscaAlbum" class="form-label mb-0 espaco-label">Procure o Álbum que gostaria:</label>
                 </div>
-                <div class="col-12 col-md-6">
-                    <select class="form-select" aria-label="Default select example">
-                    <option selected>procure seu album</option>
-                    <option value="EscreverComentario.html">In Rainbows</option>
-                    <option value="2">Kid A</option>
-                    <option value="3">Ok Computer</option>
-                    </select>                
-                </div>
+                    <input class="form-control input-largo" list="albuns" id="buscaAlbum" placeholder="Digite para buscar...">
+                        <datalist id="albuns">
+                            <option value="In Rainbows">
+                            <option value="Kid A">
+                            <option value="Ok Computer">
+                        </datalist>
                 <!--levar para outra pagina-->
                 <script>
-                    document.getElementById("albumSelect").addEventListener("change", function () {
-                        const selectedValue = this.value;
-                        if (selectedValue) {
-                        window.location.href = selectedValue;
+                    document.getElementById("buscaAlbum").addEventListener("change", function () {
+                        const valor = this.value;
+
+                        // dicionário de redirecionamento
+                        const links = {
+                        "In Rainbows": "EscreverComentário.html", // coloque o nome real do arquivo aqui",
+                        "Kid A": "KidA.html",             // coloque o nome real do arquivo aqui
+                        "Ok Computer": "OkComputer.html"  // coloque o nome real do arquivo aqui
+                        };
+
+                        if (links[valor]) {
+                        window.location.href = links[valor];
+                        } else {
+                        alert("Página não encontrada para o álbum: " + valor);
                         }
                     });
                 </script>
-            </div>
+                            </div>
         </div>
         <!-- Bootstrap core JS-->
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
