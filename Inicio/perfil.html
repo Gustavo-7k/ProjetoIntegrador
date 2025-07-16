@@ -152,28 +152,64 @@
             border-radius: 8px;
             overflow: hidden;
             box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            aspect-ratio: 1/1;
+            display: flex;
+            flex-direction: column;
         }
         
         .album-cover {
-            height: 120px;
+            background-image: url('https://via.placeholder.com/300');
+            position: relative;
+            padding-bottom: 100%; /* Cria um quadrado baseado na largura */
             background-size: cover;
             background-position: center;
-            background-image: url('https://via.placeholder.com/300');
         }
         
         .album-info {
-            padding: 12px;
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: rgba(0, 0, 0, 0.7); /* Fundo preto com 70% de opacidade */
+            color: white;
+            padding: 10px;
+            transition: all 0.3s ease;
         }
         
         .album-title {
             font-weight: bold;
             margin-bottom: 5px;
-            color: #333;
+            color: white !important;
         }
         
         .album-artist {
             font-size: 0.9rem;
-            color: #666;
+            color: #ccc !important;
+        }
+
+        .album-cover img {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        object-fit: cover;
+        }
+        .profile-stats {
+            display: flex;
+            align-items: center;  /* Alinha verticalmente */
+            flex-wrap: wrap;     /* Quebra linha em telas pequenas */
+            gap: 15px;           /* Espaço entre elementos */
+        }
+
+        /* Efeitos de hover */
+        #toggle-friend-btn:hover {
+            background-color: #2a1a5e !important;
+            transform: translateY(-1px);
+        }
+
+        /* Transição suave do formulário */
+        #friend-request-form {
+            transition: opacity 0.3s, transform 0.3s;
         }
         
         </style>
@@ -194,6 +230,63 @@
                     <span class="stat-number">999999</span>
                     <span class="stat-label">conexões</span>
                 </div>
+                    <div style="display: flex; align-items: center; gap: 10px;">
+                        <button 
+                            id="toggle-friend-btn" 
+                            class="btn btn-sm" 
+                            style="
+                                background-color: #170045; 
+                                color: white;
+                                border: none;
+                                border-radius: 20px;
+                                padding: 5px 15px;
+                                font-size: 0.9rem;
+                                display: flex;
+                                align-items: center;
+                                gap: 5px;
+                            "
+                        >
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                                <path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                                <circle cx="8.5" cy="7" r="4"></circle>
+                                <line x1="20" y1="8" x2="20" y2="14"></line>
+                                <line x1="23" y1="11" x2="17" y2="11"></line>
+                            </svg>
+                            Adicionar amigo
+                        </button>
+                        
+                        <div 
+                            id="friend-request-form" 
+                            style="
+                                display: none; 
+                                align-items: center;
+                                gap: 10px;
+                            "
+                        >
+                            <input 
+                                type="text" 
+                                class="form-control form-control-sm" 
+                                placeholder="Digite o nome" 
+                                style="
+                                    width: 180px; 
+                                    border-radius: 20px;
+                                    border: 1px solid #ced4da;
+                                    padding: 5px 15px;
+                                "
+                            >
+                            <button 
+                                class="btn btn-sm" 
+                                style="
+                                    background-color: #28a745; 
+                                    color: white;
+                                    border-radius: 20px;
+                                    padding: 5px 15px;
+                                "
+                            >
+                                Enviar
+                            </button>
+                        </div>
+                    </div>
             </div>
             
             <!-- Biografia -->
@@ -208,59 +301,138 @@
                 <div class="albums-grid">
                     <!-- Álbum 1 -->
                     <div class="album-card">
-                        <div class="album-cover"></div>
-                        <div class="album-info">
-                            <div class="album-title">Histórias de Kebrada Para Crianças Mal Criadas</div>
-                            <div class="album-artist">Link do Zap</div>
+                        <div class="album-cover">
+                            <img src="img/NTHMS.png" alt="Capa do Álbum">
+                            <div class="album-info">
+                                <div class="album-title">Histórias de Kebrada Para Crianças Mal Criadas</div>
+                                <div class="album-artist">Link do Zap</div>
+                            </div>
                         </div>
                     </div>
                     
                     <!-- Álbum 2 -->
                     <div class="album-card">
-                        <div class="album-cover"></div>
-                        <div class="album-info">
-                            <div class="album-title">In Rainbows</div>
-                            <div class="album-artist">Radiohead</div>
+                        <div class="album-cover">
+                            <img src="img/NTHMS.png" alt="">
+                            <div class="album-info">
+                                <div class="album-title">In Rainbows</div>
+                                <div class="album-artist">Radiohead</div>
+                            </div>
                         </div>
                     </div>
                     
                     <!-- Álbum 3 -->
                     <div class="album-card">
-                        <div class="album-cover"></div>
-                        <div class="album-info">
-                            <div class="album-title">Bury Me At Makeout Creek</div>
-                            <div class="album-artist">Mitski</div>
+                        <div class="album-cover">
+                            <img src="img/NTHMS.png" alt="">
+                            <div class="album-info">
+                                <div class="album-title">Bury Me At Makeout Creek</div>
+                                <div class="album-artist">Mitski</div>
+                            </div>
                         </div>
                     </div>
                     
                     <!-- Álbum 4 -->
                     <div class="album-card">
-                        <div class="album-cover"></div>
-                        <div class="album-info">
-                            <div class="album-title">Blonde</div>
-                            <div class="album-artist">Frank Ocean</div>
+                        <div class="album-cover">
+                            <img src="img/NTHMS.png" alt="">
+                            <div class="album-info">
+                                <div class="album-title">Blonde</div>
+                                <div class="album-artist">Frank Ocean</div>
+                            </div>
                         </div>
                     </div>
                     
                     <!-- Álbum 5 -->
                     <div class="album-card">
-                        <div class="album-cover"></div>
-                        <div class="album-info">
-                            <div class="album-title">This Old Dog</div>
-                            <div class="album-artist">Mac Demarco</div>
+                        <div class="album-cover">
+                            <img src="img/NTHMS.png" alt="">
+                            <div class="album-info">
+                                <div class="album-title">This Old Dog</div>
+                                <div class="album-artist">Mac Demarco</div>
+                            </div>
                         </div>
                     </div>
                     
                     <!-- Álbum 6 -->
                     <div class="album-card">
-                        <div class="album-cover"></div>
-                        <div class="album-info">
-                            <div class="album-title">Shed</div>
-                            <div class="album-artist">Title Fight</div>
+                        <div class="album-cover">
+                            <img src="img/NTHMS.png" alt="">
+                            <div class="album-info">
+                                <div class="album-title">Shed</div>
+                                <div class="album-artist">Title Fight</div>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
+
+            <!-- artistas favoritos -->
+            <div class="albums-section">
+                <h3>Artistas Favoritos</h3>
+                <div class="albums-grid">
+                    <!-- Artista 1 -->
+                    <div class="album-card">
+                        <div class="album-cover">
+                            <img style="height: 330px" src="img/NTHMS.png" alt="">
+                            <div class="album-info">
+                                <div class="album-title">Radiohead</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Artista 2 -->
+                    <div class="album-card">
+                        <div class="album-cover">
+                            <img src="img/NTHMS.png" alt="">
+                            <div class="album-info">
+                                <div class="album-title">Mitski</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Artista 3 -->
+                    <div class="album-card">
+                        <div class="album-cover">
+                            <img src="img/NTHMS.png" alt="">
+                            <div class="album-info">
+                                <div class="album-title">Frank Ocean</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Artista 4 -->
+                    <div class="album-card">
+                        <div class="album-cover">
+                            <img src="img/NTHMS.png" alt="">
+                            <div class="album-info">
+                                <div class="album-title">Mac Demarco</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Artista 5 -->
+                    <div class="album-card">
+                        <div class="album-cover">
+                            <img src="img/NTHMS.png" alt="">
+                            <div class="album-info">
+                                <div class="album-title">Big Rush</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Artista 6 -->
+                    <div class="album-card">
+                        <div class="album-cover">
+                            <img src="img/NTHMS.png" alt="">
+                            <div class="album-info">
+                                <div class="album-title">Link do zap</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
         </div>
     </div>
     <div class="chat-sidebar" style="
@@ -356,6 +528,18 @@
                     overlay.style.display = 'none';
                     setTimeout(() => overlay.remove(), 300);
                 });
+            });
+
+             document.getElementById('toggle-friend-btn').addEventListener('click', function() {
+                const form = document.getElementById('friend-request-form');
+                if (form.style.display === 'none' || !form.style.display) {
+                    form.style.display = 'flex';
+                    form.style.opacity = '0';
+                    setTimeout(() => { form.style.opacity = '1'; }, 10);
+                } else {
+                    form.style.opacity = '0';
+                    setTimeout(() => { form.style.display = 'none'; }, 300);
+                }
             });
         </script>
         <!-- Bootstrap core JS-->
