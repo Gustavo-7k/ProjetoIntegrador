@@ -12,6 +12,10 @@
         <link href="https://fonts.googleapis.com/css2?family=Medula+One&display=swap" rel="stylesheet">
         <!-- Core theme CSS (includes Bootstrap)-->
         <link href="inicioTEMPLATE.css" rel="stylesheet" />
+
+        <!-- Cropper.js CSS -->
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.12/cropper.min.css">
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.12/cropper.min.js"></script>
     </head>
     <body>
         <style>
@@ -211,6 +215,22 @@
         #friend-request-form {
             transition: opacity 0.3s, transform 0.3s;
         }
+
+        /* editar perfil */
+        .edit-btn {
+            background: white;
+            border: 2px solid #170045;
+            border-radius: 20px;
+            padding: 5px 15px;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            cursor: pointer;
+            margin-bottom: 15px;
+        }
+        .edit-btn:hover {
+            background: #f0f0f0;
+        }
         
         </style>
 <body>
@@ -223,6 +243,12 @@
         <!-- Conteúdo do perfil -->
         <div class="profile-content">
             <h1>Gustavo</h1>
+                <button id="edit-profile-btn" class="edit-btn">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#170045">
+                        <path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"></path>
+                    </svg>
+                    Editar perfil
+                </button>
             
             <!-- Estatísticas -->
             <div class="profile-stats">
@@ -252,7 +278,7 @@
                                 <line x1="20" y1="8" x2="20" y2="14"></line>
                                 <line x1="23" y1="11" x2="17" y2="11"></line>
                             </svg>
-                            Adicionar amigo
+                            Adicionar conexão
                         </button>
                         
                         <div 
@@ -374,7 +400,7 @@
                     <!-- Artista 1 -->
                     <div class="album-card">
                         <div class="album-cover">
-                            <img style="height: 330px" src="img/NTHMS.png" alt="">
+                            <img src="img/NTHMS.png" alt="">
                             <div class="album-info">
                                 <div class="album-title">Radiohead</div>
                             </div>
@@ -499,6 +525,63 @@
                 </div>
             </div>
         </div>
+
+        <!-- Modal de Edição -->
+            <div id="edit-modal" style="
+                display: none;
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background: rgba(0,0,0,0.5);
+                z-index: 1000;
+                justify-content: center;
+                align-items: center;
+            ">
+                <div style="
+                    background: #fff;
+                    padding: 20px;
+                    border-radius: 10px;
+                    width: 90%;
+                    max-width: 500px;
+                ">
+                    <h3>Editar Perfil</h3>
+                    
+                    <!-- Campos de Texto -->
+                    <div class="mb-3">
+                        <label>Nome</label>
+                        <input type="text" id="edit-name" class="form-control" value="Gustavo">
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label>Bio</label>
+                        <textarea id="edit-bio" class="form-control">Gosto muito de ouvir música, shoegaze, grunge, alternativo, rap, trap, indie</textarea>
+                    </div>
+                    
+                    <!-- Upload de Fotos -->
+                    <div class="mb-3">
+                        <label>Foto de Perfil</label>
+                        <input type="file" id="upload-avatar" accept="image/*" class="form-control">
+                        <div id="avatar-preview" style="width: 100px; height: 100px; border-radius: 50%; margin-top: 10px; background: #eee; overflow: hidden;"></div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label>Foto de Capa (arraste para ajustar o recorte)</label>
+                        <input type="file" id="upload-cover" accept="image/*" class="form-control">
+                        <div id="cover-crop-container" style="margin-top: 10px; max-height: 200px; display: none;">
+                            <img id="cover-crop-preview" style="max-width: 100%;">
+                        </div>
+                    </div>
+                    
+                    <!-- Botões -->
+                    <div style="display: flex; gap: 10px;">
+                        <button id="save-changes" class="btn btn-primary">Salvar</button>
+                        <button id="cancel-edit" class="btn btn-secondary">Cancelar</button>
+                    </div>
+                </div>
+            </div>
+
         <script>
             // Controla a barra lateral do chat
             document.getElementById('open-chat-sidebar')?.addEventListener('click', function(e) {
@@ -541,6 +624,108 @@
                     setTimeout(() => { form.style.display = 'none'; }, 300);
                 }
             });
+
+             // Abre/fecha modal
+            document.getElementById('edit-profile-btn').addEventListener('click', () => {
+                document.getElementById('edit-modal').style.display = 'flex';
+            });
+            
+            document.getElementById('cancel-edit').addEventListener('click', () => {
+                document.getElementById('edit-modal').style.display = 'none';
+            });
+            
+            // Pré-visualização das imagens
+            document.getElementById('upload-avatar').addEventListener('change', function(e) {
+                const file = e.target.files[0];
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = function(event) {
+                        document.getElementById('avatar-preview').style.backgroundImage = `url(${event.target.result})`;
+                        document.getElementById('avatar-preview').style.backgroundSize = 'cover';
+                    };
+                    reader.readAsDataURL(file);
+                }
+            });
+            
+            document.getElementById('upload-cover').addEventListener('change', function(e) {
+                const file = e.target.files[0];
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = function(event) {
+                        document.getElementById('cover-preview').style.backgroundImage = `url(${event.target.result})`;
+                        document.getElementById('cover-preview').style.backgroundSize = 'cover';
+                    };
+                    reader.readAsDataURL(file);
+                }
+            });
+            
+            // Salvar alterações (frontend-only)
+            document.getElementById('save-changes').addEventListener('click', function() {
+                // Atualiza nome e bio
+                document.querySelector('h1').textContent = document.getElementById('edit-name').value;
+                document.querySelector('.profile-bio p').textContent = document.getElementById('edit-bio').value;
+                
+                // Aplica a foto de perfil (se houver upload)
+                const avatarPreview = document.getElementById('avatar-preview').style.backgroundImage;
+                if (avatarPreview && avatarPreview !== 'none') {
+                    document.querySelector('.profile-picture').style.backgroundImage = avatarPreview;
+                }
+                
+                // Aplica a capa recortada (se houver cropper)
+                if (cropper) {
+                    const croppedCanvas = cropper.getCroppedCanvas();
+                    const croppedImage = croppedCanvas.toDataURL('image/jpeg');
+                    document.querySelector('.cover-photo').style.backgroundImage = `url(${croppedImage})`;
+                }
+                
+                // Fecha modal
+                document.getElementById('edit-modal').style.display = 'none';
+            });
+
+
+            // Cropper.js para a foto de capa
+            let cropper;
+
+            document.getElementById('upload-cover').addEventListener('change', function(e) {
+                const file = e.target.files[0];
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = function(event) {
+                        const container = document.getElementById('cover-crop-container');
+                        const preview = document.getElementById('cover-crop-preview');
+                        
+                        container.style.display = 'block';
+                        preview.src = event.target.result;
+                        
+                        // Destrói o cropper anterior se existir
+                        if (cropper) cropper.destroy();
+                        
+                        // Inicializa o cropper
+                        cropper = new Cropper(preview, {
+                            aspectRatio: 16 / 3, // Proporção da capa
+                            viewMode: 1,
+                            dragMode: 'move',
+                            autoCropArea: 0.8,
+                            movable: true,
+                            cropBoxMovable: true,
+                            cropBoxResizable: true
+                        });
+                    };
+                    reader.readAsDataURL(file);
+                }
+            });
+
+            // Ao salvar, aplica o recorte
+            document.getElementById('save-changes').addEventListener('click', function() {
+                if (cropper) {
+                    const croppedCanvas = cropper.getCroppedCanvas();
+                    const croppedImage = croppedCanvas.toDataURL('image/jpeg');
+                    
+                    // Aplica a capa recortada no perfil
+                    document.querySelector('.cover-photo').style.backgroundImage = `url(${croppedImage})`;
+                }
+            });
+
         </script>
         <!-- Bootstrap core JS-->
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
