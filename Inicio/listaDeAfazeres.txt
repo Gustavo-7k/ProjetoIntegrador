@@ -17,4 +17,20 @@ timeout/banimento de contas
 opcionais que pensei:
 Usuarios fazerem amizades, entao teria que ter mais telas:
 tela de conexoes com usuarios✅
-tela de aceitar conexao
+tela de aceitar conexao✅
+
+PRIORIDADES
+tela para ver todas as notificaçoes✅
+adicionar bandeirinha para report de usuario em cada comentario
+reformular tela de perfil
+tela para procurar conexoes e enviar solicitaçao
+searchbar
+telas de adm
+tela de chat
+fazer a tela de conexoes deixar clicavel nas resenhas
+fazer a logo do site mandar pra tela inicial
+
+
+ações de adm:
+ver lista de denúncias feitas (tela)
+timeout/banimento de contas (opçao ao lado de comentarios ou pessoa)
