@@ -21,13 +21,16 @@ tela de aceitar conexao✅
 
 PRIORIDADES
 tela para ver todas as notificaçoes✅
-adicionar bandeirinha para report de usuario em cada comentario
-reformular tela de perfil
-tela para procurar conexoes e enviar solicitaçao
+adicionar bandeirinha para report de usuario em cada comentario✅
+reformular tela de perfil✅
+tela para procurar conexoes e enviar solicitaçao✅
+tela mostrar artista -> fazer tela de todos os albuns
 searchbar
+nota nos albuns
 telas de adm
-tela de chat
-fazer a tela de conexoes deixar clicavel nas resenhas
+
+coisas faceis de fazer:
+fazer a tela de conexoes deixar clicavel nas resenhas✅
 fazer a logo do site mandar pra tela inicial
 
 
