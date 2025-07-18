@@ -27,13 +27,11 @@ tela para procurar conexoes e enviar solicitaçao✅
 tela mostrar artista -> fazer tela de todos os albuns✅
 searchbar
 nota nos albuns
-telas de adm
+telas de adm✅
 
 coisas faceis de fazer:
 fazer a tela de conexoes deixar clicavel nas resenhas✅
-fazer a logo do site mandar pra tela inicial
-
 
 ações de adm:
-ver lista de denúncias feitas (tela)
+ver lista de denúncias feitas (tela)✅
 timeout/banimento de contas (opçao ao lado de comentarios ou pessoa)✅
