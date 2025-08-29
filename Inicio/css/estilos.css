@@ -1,0 +1,1072 @@
+/* ========================================
+   ANTHEMS - CSS CENTRALIZADO
+   ======================================== */
+
+/* Variáveis CSS para manter consistência */
+:root {
+    --primary-color: #170045;
+    --primary-light: #c29fef;
+    --secondary-light: #a0d8f3;
+    --accent-light: #f5a8a8;
+    --success-light: #b5e8b5;
+    --text-white: #ffffff;
+    --text-gray: #6c757d;
+    --border-gray: #dee2e6;
+    --border-light: #eee;
+    --shadow-light: rgba(0,0,0,0.1);
+    --shadow-overlay: rgba(0,0,0,0.5);
+}
+
+/* ========================================
+   NAVBAR PERSONALIZADO
+   ======================================== */
+.navbar-custom {
+    background-color: var(--primary-color);
+}
+
+.navbar-brand-custom {
+    position: relative;
+    display: inline-block;
+    font-family: 'Medula One', sans-serif;
+    font-size: 40px;
+}
+
+.navbar-brand-logo {
+    height: 57px;
+    position: absolute;
+    top: 7px;
+    left: 0;
+    z-index: 0;
+}
+
+.navbar-brand-text {
+    position: relative;
+    z-index: 1;
+    color: white;
+    right: 15px;
+}
+
+.nav-icon {
+    height: 30px;
+}
+
+.nav-chat-icon {
+    padding-top: 8px;
+}
+
+.nav-notification-icon {
+    margin-bottom: 3px;
+}
+
+/* ========================================
+   DROPDOWN DE NOTIFICAÇÕES
+   ======================================== */
+.notification-dropdown {
+    width: 300px;
+    padding: 0;
+}
+
+.notification-header {
+    padding: 10px 15px;
+    border-bottom: 1px solid var(--border-gray);
+}
+
+.notification-content {
+    padding: 20px;
+    text-align: center;
+}
+
+.notification-footer {
+    padding: 10px 15px;
+    border-top: 1px solid var(--border-gray);
+    text-align: center;
+}
+
+/* ========================================
+   CHAT SIDEBAR
+   ======================================== */
+.chat-sidebar {
+    position: fixed;
+    top: 0;
+    right: -350px;
+    width: 350px;
+    height: 100vh;
+    background-color: var(--primary-color);
+    box-shadow: -5px 0 15px var(--shadow-light);
+    transition: right 0.3s ease;
+    z-index: 1000;
+    padding-top: 70px;
+}
+
+.chat-sidebar.active {
+    right: 0;
+}
+
+.chat-header {
+    padding: 15px;
+    border-bottom: 1px solid var(--border-light);
+}
+
+.chat-header h5 {
+    color: var(--text-white);
+    margin: 0;
+}
+
+.chat-search {
+    padding: 15px;
+    border-bottom: 1px solid var(--border-light);
+}
+
+.chat-content {
+    overflow-y: auto;
+    height: calc(100vh - 180px);
+}
+
+.chat-section {
+    padding: 15px;
+    border-bottom: 1px solid var(--border-light);
+}
+
+.chat-section h6 {
+    color: var(--text-white);
+    margin: 0 0 10px 0;
+}
+
+.chat-contacts {
+    margin-bottom: 15px;
+}
+
+.contact-item {
+    display: flex;
+    align-items: center;
+    padding: 8px 0;
+    cursor: pointer;
+}
+
+.contact-avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    margin-right: 10px;
+}
+
+.contact-avatar.primary { background-color: var(--primary-light); }
+.contact-avatar.secondary { background-color: var(--secondary-light); }
+.contact-avatar.accent { background-color: var(--accent-light); }
+.contact-avatar.success { background-color: var(--success-light); }
+
+.contact-info p {
+    color: var(--text-white);
+    margin: 0;
+    font-weight: 500;
+}
+
+.contact-info small {
+    color: var(--text-gray);
+}
+
+.chat-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: var(--shadow-overlay);
+    z-index: 999;
+    display: none;
+}
+
+/* ========================================
+   PERFIL
+   ======================================== */
+.profile-container {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+.cover-photo {
+    height: 200px;
+    background: linear-gradient(135deg, var(--primary-color), var(--primary-light));
+    border-radius: 15px;
+    position: relative;
+    margin-bottom: 60px;
+    background-size: cover;
+    background-position: center;
+}
+
+.profile-picture {
+    width: 120px;
+    height: 120px;
+    background-color: #ddd;
+    border-radius: 50%;
+    border: 5px solid white;
+    position: absolute;
+    bottom: -60px;
+    left: 30px;
+    background-size: cover;
+    background-position: center;
+}
+
+.profile-content {
+    padding-left: 30px;
+}
+
+.profile-content h1 {
+    color: var(--primary-color);
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+
+.edit-btn {
+    background: none;
+    border: 2px solid var(--primary-color);
+    color: var(--primary-color);
+    padding: 8px 15px;
+    border-radius: 25px;
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 20px;
+    transition: all 0.3s ease;
+}
+
+.edit-btn:hover {
+    background-color: var(--primary-color);
+    color: white;
+}
+
+.profile-stats {
+    display: flex;
+    align-items: center;
+    gap: 30px;
+    margin-bottom: 30px;
+}
+
+.stat-item {
+    text-align: center;
+}
+
+.stat-number {
+    display: block;
+    font-size: 24px;
+    font-weight: bold;
+    color: var(--primary-color);
+}
+
+.stat-label {
+    color: var(--text-gray);
+    font-size: 14px;
+}
+
+.connection-btn {
+    background-color: var(--primary-color);
+    color: white;
+    border: none;
+    border-radius: 20px;
+    padding: 5px 15px;
+    font-size: 0.9rem;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.connection-form {
+    display: none;
+    align-items: center;
+    gap: 10px;
+}
+
+.connection-input {
+    width: 180px;
+    border-radius: 20px;
+    border: 1px solid #ced4da;
+    padding: 5px 15px;
+}
+
+.connection-submit {
+    background-color: #28a745;
+    color: white;
+    border-radius: 20px;
+    padding: 5px 15px;
+}
+
+.profile-bio {
+    margin-bottom: 40px;
+}
+
+.profile-bio h4 {
+    color: var(--primary-color);
+    margin-bottom: 15px;
+}
+
+.albums-section {
+    margin-bottom: 40px;
+}
+
+.albums-section h3 {
+    color: var(--primary-color);
+    margin-bottom: 25px;
+}
+
+.albums-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    gap: 20px;
+}
+
+.album-card {
+    text-align: center;
+}
+
+.album-cover {
+    position: relative;
+    margin-bottom: 10px;
+}
+
+.album-cover img {
+    width: 100%;
+    height: 150px;
+    object-fit: cover;
+    border-radius: 10px;
+}
+
+.album-info {
+    padding: 10px 0;
+}
+
+.album-title {
+    font-weight: bold;
+    color: var(--primary-color);
+    font-size: 14px;
+    margin-bottom: 5px;
+}
+
+.album-artist {
+    color: var(--text-gray);
+    font-size: 13px;
+}
+
+/* ========================================
+   MODAL DE EDIÇÃO
+   ======================================== */
+.edit-modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: var(--shadow-overlay);
+    z-index: 1000;
+    justify-content: center;
+    align-items: center;
+}
+
+.edit-modal-content {
+    background: #fff;
+    padding: 20px;
+    border-radius: 10px;
+    width: 90%;
+    max-width: 500px;
+}
+
+.edit-modal h3 {
+    color: var(--primary-color);
+    margin-bottom: 20px;
+}
+
+.edit-modal .mb-3 {
+    margin-bottom: 1rem;
+}
+
+.edit-modal label {
+    color: var(--primary-color);
+    font-weight: 500;
+    margin-bottom: 5px;
+    display: block;
+}
+
+.edit-modal .form-control {
+    border: 1px solid #ced4da;
+    border-radius: 5px;
+    padding: 8px 12px;
+}
+
+.edit-modal .form-control:focus {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 0.2rem rgba(23, 0, 69, 0.25);
+}
+
+.avatar-preview,
+.cover-preview {
+    background: #eee;
+    overflow: hidden;
+    margin-top: 10px;
+}
+
+.avatar-preview {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+}
+
+.cover-crop-container {
+    margin-top: 10px;
+    max-height: 200px;
+    display: none;
+}
+
+.cover-crop-preview {
+    max-width: 100%;
+}
+
+.edit-modal-buttons {
+    display: flex;
+    gap: 10px;
+    margin-top: 20px;
+}
+
+.btn-primary-custom {
+    background-color: var(--primary-color);
+    border-color: var(--primary-color);
+}
+
+.btn-primary-custom:hover {
+    background-color: #0f0035;
+    border-color: #0f0035;
+}
+
+/* ========================================
+   LOGIN
+   ======================================== */
+.login-section {
+    padding: 3rem 1rem;
+}
+
+.login-card {
+    border-radius: 15px;
+    overflow: hidden;
+    box-shadow: 0 10px 30px var(--shadow-light);
+}
+
+.login-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.login-content {
+    padding: 3rem 2rem;
+}
+
+.login-logo {
+    width: 75px;
+    height: 75px;
+    margin-bottom: 1rem;
+}
+
+.login-title {
+    color: var(--primary-color);
+    font-weight: 600;
+    margin-bottom: 2rem;
+}
+
+.google-btn {
+    border: 2px solid var(--primary-color);
+    color: var(--primary-color);
+    padding: 12px 20px;
+    border-radius: 8px;
+    font-weight: 500;
+    transition: all 0.3s ease;
+}
+
+.google-btn:hover {
+    background-color: var(--primary-color);
+    color: white;
+}
+
+.login-btn {
+    background-color: var(--primary-color);
+    border-color: var(--primary-color);
+    padding: 12px 20px;
+    font-weight: 500;
+}
+
+.login-btn:hover {
+    background-color: #0f0035;
+    border-color: #0f0035;
+}
+
+.login-links a {
+    color: var(--primary-color);
+    text-decoration: none;
+    font-weight: 500;
+}
+
+.login-links a:hover {
+    text-decoration: underline;
+}
+
+/* ========================================
+   COMENTÁRIOS
+   ======================================== */
+.centralizar-tela {
+    min-height: 80vh;
+    display: flex;
+    align-items: center;
+}
+
+.espaco-label {
+    margin-right: 15px;
+    font-weight: 500;
+    color: var(--primary-color);
+}
+
+.input-largo {
+    max-width: 400px;
+    border: 2px solid var(--primary-color);
+    border-radius: 25px;
+    padding: 10px 20px;
+}
+
+.input-largo:focus {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 0.2rem rgba(23, 0, 69, 0.25);
+}
+
+/* ========================================
+   RESPONSIVIDADE
+   ======================================== */
+
+/* Mobile First - Smartphones */
+@media (max-width: 575px) {
+    .navbar-brand-custom {
+        font-size: 28px;
+    }
+    
+    .navbar-brand-logo {
+        height: 40px;
+        top: 5px;
+    }
+    
+    .navbar-brand-text {
+        right: 10px;
+    }
+    
+    .chat-sidebar {
+        width: 100%;
+        right: -100%;
+    }
+    
+    .profile-container {
+        padding: 10px;
+    }
+    
+    .cover-photo {
+        height: 150px;
+        margin-bottom: 40px;
+    }
+    
+    .profile-picture {
+        width: 80px;
+        height: 80px;
+        bottom: -40px;
+        left: 15px;
+    }
+    
+    .profile-content {
+        padding-left: 15px;
+    }
+    
+    .profile-stats {
+        flex-direction: column;
+        gap: 15px;
+        text-align: center;
+    }
+    
+    .albums-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 15px;
+    }
+    
+    .connection-form {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    
+    .connection-input {
+        width: 100%;
+    }
+    
+    .edit-modal-content {
+        width: 95%;
+        padding: 15px;
+    }
+    
+    .login-content {
+        padding: 2rem 1rem;
+    }
+    
+    .notification-dropdown {
+        width: 280px;
+    }
+    
+    .centralizar-tela .row {
+        text-align: center;
+    }
+    
+    .espaco-label {
+        margin-right: 0;
+        margin-bottom: 10px;
+    }
+    
+    .input-largo {
+        max-width: 100%;
+        margin-top: 10px;
+    }
+}
+
+/* Tablets */
+@media (min-width: 576px) and (max-width: 767px) {
+    .chat-sidebar {
+        width: 320px;
+        right: -320px;
+    }
+    
+    .albums-grid {
+        grid-template-columns: repeat(3, 1fr);
+    }
+    
+    .profile-stats {
+        flex-wrap: wrap;
+        gap: 20px;
+    }
+}
+
+/* Desktop pequeno */
+@media (min-width: 768px) and (max-width: 991px) {
+    .albums-grid {
+        grid-template-columns: repeat(4, 1fr);
+    }
+    
+    .profile-stats {
+        gap: 25px;
+    }
+}
+
+/* Desktop médio */
+@media (min-width: 992px) and (max-width: 1199px) {
+    .albums-grid {
+        grid-template-columns: repeat(5, 1fr);
+    }
+}
+
+/* Desktop grande */
+@media (min-width: 1200px) {
+    .albums-grid {
+        grid-template-columns: repeat(6, 1fr);
+    }
+    
+    .profile-container {
+        max-width: 1000px;
+    }
+}
+
+/* ========================================
+   MELHORIAS DE ACESSIBILIDADE
+   ======================================== */
+.btn:focus,
+.form-control:focus {
+    outline: 2px solid var(--primary-color);
+    outline-offset: 2px;
+}
+
+.contact-item:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
+}
+
+.album-card:hover .album-cover img {
+    transform: scale(1.05);
+    transition: transform 0.3s ease;
+}
+
+/* ========================================
+   ANIMAÇÕES
+   ======================================== */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.profile-container {
+    animation: fadeIn 0.5s ease-out;
+}
+
+.chat-sidebar {
+    transition: right 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.edit-btn,
+.connection-btn,
+.login-btn {
+    transition: all 0.3s ease;
+    transform: translateY(0);
+}
+
+.edit-btn:hover,
+.connection-btn:hover,
+.login-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(23, 0, 69, 0.3);
+}
+
+/* ========================================
+   DARK MODE (Opcional para futuro)
+   ======================================== */
+@media (prefers-color-scheme: dark) {
+    .card {
+        background-color: #2d3748;
+        color: white;
+    }
+    
+    .form-control {
+        background-color: #4a5568;
+        border-color: #718096;
+        color: white;
+    }
+}
+
+/* ========================================
+   ADMIN STYLES
+   ======================================== */
+.admin-report-item {
+    position: relative;
+    padding: 15px 20px;
+    border-left: 4px solid var(--primary-color);
+}
+
+.admin-report-item .admin-actions {
+    display: flex;
+    gap: 8px;
+    margin-top: 10px;
+}
+
+.admin-actions-toggle {
+    background: none;
+    border: none;
+    color: #6c757d;
+    cursor: pointer;
+    padding: 5px;
+    border-radius: 3px;
+    position: absolute;
+    top: 10px;
+    right: 10px;
+}
+
+.admin-actions-toggle:hover {
+    background-color: #f8f9fa;
+    color: var(--primary-color);
+}
+
+.admin-actions-menu {
+    position: absolute;
+    top: 100%;
+    right: 0;
+    background: white;
+    border: 1px solid #dee2e6;
+    border-radius: 5px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    z-index: 1000;
+    min-width: 150px;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-10px);
+    transition: all 0.2s ease;
+}
+
+.admin-actions-menu.show {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+}
+
+.admin-actions-item {
+    padding: 10px 15px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 14px;
+    border-bottom: 1px solid #f8f9fa;
+}
+
+.admin-actions-item:last-child {
+    border-bottom: none;
+}
+
+.admin-actions-item:hover {
+    background-color: #f8f9fa;
+}
+
+.admin-actions-item.timeout:hover {
+    background-color: #fff3cd;
+    color: #856404;
+}
+
+.admin-actions-item.ban:hover {
+    background-color: #f8d7da;
+    color: #721c24;
+}
+
+.admin-actions-item.delete:hover {
+    background-color: #f8d7da;
+    color: #721c24;
+}
+
+.admin-actions-item.info:hover {
+    background-color: #d1ecf1;
+    color: #0c5460;
+}
+
+.report-type-badge {
+    background-color: #ffc107;
+    color: #212529;
+    padding: 2px 6px;
+    border-radius: 3px;
+    font-size: 11px;
+    font-weight: 500;
+    margin-left: 8px;
+}
+
+.notification-header .badge {
+    margin-left: 10px;
+}
+
+/* ========================================
+   ALBUMS PAGE STYLES
+   ======================================== */
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 30px;
+    padding: 20px 0;
+    border-bottom: 2px solid var(--primary-color);
+}
+
+.page-title {
+    color: var(--primary-color);
+    font-family: 'Medula One', sans-serif;
+    margin: 0;
+}
+
+.back-link {
+    color: var(--primary-color);
+    text-decoration: none;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.back-link:hover {
+    color: var(--secondary-color);
+    text-decoration: none;
+}
+
+.filter-section {
+    background: #f8f9fa;
+    padding: 20px;
+    border-radius: 10px;
+    margin-bottom: 20px;
+}
+
+.albums-counter {
+    color: #6c757d;
+    font-weight: 500;
+}
+
+.albums-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 25px;
+    padding: 20px 0;
+}
+
+.albums-container.list-view {
+    grid-template-columns: 1fr;
+    gap: 15px;
+}
+
+.albums-container.list-view .album-card {
+    display: flex;
+    align-items: center;
+    padding: 15px;
+    background: white;
+    border-radius: 10px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+}
+
+.albums-container.list-view .album-cover {
+    width: 80px;
+    height: 80px;
+    margin-right: 15px;
+    flex-shrink: 0;
+}
+
+.albums-container.list-view .album-info {
+    position: static;
+    background: none;
+    color: var(--text-color);
+    padding: 0;
+}
+
+.album-card {
+    cursor: pointer;
+    transition: transform 0.2s ease;
+    position: relative;
+}
+
+.album-card:hover {
+    transform: translateY(-5px);
+}
+
+.album-cover {
+    width: 100%;
+    height: 200px;
+    background-size: cover;
+    background-position: center;
+    border-radius: 10px;
+    position: relative;
+    overflow: hidden;
+}
+
+.album-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0,0,0,0.7);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.album-card:hover .album-overlay {
+    opacity: 1;
+}
+
+.album-actions {
+    display: flex;
+    gap: 10px;
+}
+
+.album-actions .btn {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.album-info {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: linear-gradient(transparent, rgba(0,0,0,0.8));
+    color: white;
+    padding: 20px 15px 15px;
+}
+
+.album-title {
+    font-weight: bold;
+    font-size: 14px;
+    margin-bottom: 3px;
+}
+
+.album-year,
+.album-artist {
+    font-size: 12px;
+    opacity: 0.8;
+}
+
+/* Track list styles */
+.track-list {
+    max-height: 200px;
+    overflow-y: auto;
+}
+
+.track-item {
+    padding: 8px 0;
+    border-bottom: 1px solid #f8f9fa;
+    font-size: 14px;
+}
+
+.track-item:last-child {
+    border-bottom: none;
+}
+
+/* ========================================
+   TOAST NOTIFICATIONS
+   ======================================== */
+.toast {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    padding: 15px 20px;
+    border-radius: 5px;
+    color: white;
+    z-index: 1050;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.toast.success {
+    background-color: #28a745;
+}
+
+.toast.error {
+    background-color: #dc3545;
+}
+
+.toast.warning {
+    background-color: #ffc107;
+    color: #212529;
+}
+
+.toast.info {
+    background-color: #17a2b8;
+}
+
+/* ========================================
+   PRINT STYLES
+   ======================================== */
+@media print {
+    .navbar,
+    .chat-sidebar,
+    .edit-btn,
+    .connection-btn,
+    .edit-modal,
+    .admin-actions,
+    .toast {
+        display: none !important;
+    }
+    
+    .profile-container {
+        max-width: 100%;
+        padding: 0;
+    }
+    
+    .album-overlay,
+    .album-actions {
+        display: none !important;
+    }
+}
