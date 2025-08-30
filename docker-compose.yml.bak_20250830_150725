@@ -1,0 +1,86 @@
+services:
+  # Servidor Web (PHP + Apache)
+  anthems-web:
+    build: 
+      context: .
+      dockerfile: Dockerfile
+    container_name: anthems-web
+    restart: unless-stopped
+    ports:
+      - "8080:80"
+    volumes:
+      - ./:/var/www/html
+      - ./docker/logs/apache:/var/log/apache2
+      - ./uploads:/var/www/html/uploads
+    environment:
+      DB_HOST: anthems-db
+      DB_DATABASE: anthems_db
+      DB_USERNAME: anthems_user
+      DB_PASSWORD: anthems_password
+      APP_URL: http://localhost:8080
+      PHP_MEMORY_LIMIT: 256M
+      PHP_UPLOAD_MAX_FILESIZE: 10M
+      PHP_POST_MAX_SIZE: 10M
+    depends_on:
+      - anthems-db
+    networks:
+      - anthems-network
+
+  # Banco de Dados MySQL
+  anthems-db:
+    image: mysql:8.0
+    container_name: anthems-db
+    restart: unless-stopped
+    ports:
+      - "3306:3306"
+    environment:
+      MYSQL_DATABASE: anthems_db
+      MYSQL_USER: anthems_user
+      MYSQL_PASSWORD: anthems_password
+      MYSQL_ROOT_PASSWORD: root_password_secure_123
+    volumes:
+      - anthems-db-data:/var/lib/mysql
+      - ./database.sql:/docker-entrypoint-initdb.d/database.sql
+      - ./docker/mysql/my.cnf:/etc/mysql/conf.d/my.cnf
+    networks:
+      - anthems-network
+
+  # phpMyAdmin (opcional para gerenciamento do banco)
+  anthems-phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    container_name: anthems-phpmyadmin
+    restart: unless-stopped
+    ports:
+      - "8081:80"
+    environment:
+      PMA_HOST: anthems-db
+      PMA_PORT: 3306
+      PMA_USER: anthems_user
+      PMA_PASSWORD: anthems_password
+      MYSQL_ROOT_PASSWORD: root_password_secure_123
+    depends_on:
+      - anthems-db
+    networks:
+      - anthems-network
+
+  # Redis para cache (opcional)
+  anthems-redis:
+    image: redis:7-alpine
+    container_name: anthems-redis
+    restart: unless-stopped
+    ports:
+      - "6379:6379"
+    volumes:
+      - anthems-redis-data:/data
+    networks:
+      - anthems-network
+
+volumes:
+  anthems-db-data:
+    driver: local
+  anthems-redis-data:
+    driver: local
+
+networks:
+  anthems-network:
+    driver: bridge

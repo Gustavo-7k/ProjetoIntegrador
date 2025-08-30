@@ -17,6 +17,18 @@ if /i not "%~1"=="-wrapped" (
 :: Garantir que o diretório atual seja o do script
 pushd "%~dp0"
 
+REM Verificar se docker-compose.yml esta no mesmo diretorio do script
+if not exist "docker-compose.yml" (
+    echo [ERRO] Arquivo docker-compose.yml nao encontrado nesta pasta:
+    echo   %CD%
+    echo(
+    echo Mova este script para a raiz do projeto (onde esta o docker-compose.yml)
+    echo ou execute o script a partir da pasta correta.
+    echo(
+    pause
+    exit /b 1
+)
+
 :: Detectar comando do Compose (docker-compose v1 ou docker compose v2)
 set "COMPOSE=docker-compose"
 %COMPOSE% version > nul 2>&1
@@ -122,9 +134,9 @@ if %errorlevel%==0 (
     for /f "delims=" %%H in ('powershell -NoProfile -Command "try{(Invoke-WebRequest -UseBasicParsing '%WEB_URL%').StatusCode}catch{0}"') do set "WEB_CODE=%%H"
 )
 if "%WEB_CODE%"=="200" (
-    echo [OK] Web: %WEB_URL% (200)
+    echo([OK] Web: %WEB_URL% (200)
 ) else (
-    echo [FALHA] Web: %WEB_URL% (codigo %WEB_CODE%)
+    echo([FALHA] Web: %WEB_URL% (codigo %WEB_CODE%)
 )
 
 :: Verificar phpMyAdmin (porta 8081)
@@ -135,9 +147,9 @@ if %errorlevel%==0 (
     for /f "delims=" %%H in ('powershell -NoProfile -Command "try{(Invoke-WebRequest -UseBasicParsing '%PMA_URL%').StatusCode}catch{0}"') do set "PMA_CODE=%%H"
 )
 if "%PMA_CODE%"=="200" (
-    echo [OK] phpMyAdmin: %PMA_URL% (200)
+    echo([OK] phpMyAdmin: %PMA_URL% (200)
 ) else (
-    echo [AVISO] phpMyAdmin: %PMA_URL% (codigo %PMA_CODE%)
+    echo([AVISO] phpMyAdmin: %PMA_URL% (codigo %PMA_CODE%)
 )
 
 echo(
