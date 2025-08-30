@@ -6,11 +6,23 @@ $ErrorActionPreference = 'Stop'
 # Ensure script directory as CWD
 Set-Location -Path $PSScriptRoot
 
-# Ensure docker-compose.yml exists here
-if (-not (Test-Path 'docker-compose.yml')) {
-  Write-Err "docker-compose.yml nao encontrado nesta pasta: $((Get-Location).Path)"
-  Write-Info 'Mov a este script para a raiz do projeto (onde esta o docker-compose.yml) ou execute a partir da pasta correta.'
+# Select compose file: prefer compose.yaml, fallback to docker-compose.yml
+$composeFile = 'compose.yaml'
+if (-not (Test-Path $composeFile)) { $composeFile = 'docker-compose.yml' }
+if (-not (Test-Path $composeFile)) {
+  Write-Err ("Nenhum arquivo de compose encontrado nesta pasta: {0}" -f (Get-Location).Path)
+  Write-Info 'Esperado: compose.yaml ou docker-compose.yml'
   exit 1
+}
+
+# If selected file is zero bytes, try the alternate name
+$fileInfo = Get-Item $composeFile
+if ($fileInfo.Length -eq 0) {
+  $alternate = if ($composeFile -eq 'compose.yaml') { 'docker-compose.yml' } else { 'compose.yaml' }
+  if (Test-Path $alternate) {
+    $altInfo = Get-Item $alternate
+    if ($altInfo.Length -gt 0) { $composeFile = $alternate }
+  }
 }
 
 function Write-Info($msg){ Write-Host "[INFO] $msg" -ForegroundColor Cyan }
@@ -44,7 +56,8 @@ if (-not (Test-Path '.env')) {
 
 # Bring stack up (build if needed)
 Write-Info 'Starting containers (this may take a minute)...'
-& $compose up -d --build
+Write-Info ("Using compose file: {0}" -f $composeFile)
+& $compose -f $composeFile up -d --build
 
 # Determine APP URL
 $envUrl = $null

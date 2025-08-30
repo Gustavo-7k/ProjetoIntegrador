@@ -1,4 +1,9 @@
 <?php
+// Ensure core config and session are loaded once
+if (!function_exists('getDBConnection')) {
+    @include_once dirname(__DIR__) . '/config.php';
+}
+
 $page_title = isset($page_title) ? $page_title : 'NTHMS - Anthems';
 $active_page = isset($active_page) ? $active_page : '';
 $is_admin = isset($is_admin) && $is_admin;
@@ -11,6 +16,9 @@ $is_admin = isset($is_admin) && $is_admin;
     <meta name="description" content="Anthems - Plataforma de músicas e álbuns" />
     <meta name="author" content="Anthems Team" />
     <title><?php echo htmlspecialchars($page_title); ?></title>
+    <?php if (function_exists('generateCSRFToken')): ?>
+        <meta name="csrf-token" content="<?php echo htmlspecialchars(generateCSRFToken()); ?>" />
+    <?php endif; ?>
     
     <!-- Favicon -->
     <link rel="icon" type="image/png" href="<?php echo $base_path ?? ''; ?>img/NTHMSnavcon.png" />

@@ -14,13 +14,18 @@ $additional_js = [
     'https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.12/cropper.min.js'
 ];
 
-// Dados do perfil (em um sistema real, viria do banco de dados)
+require_once __DIR__ . '/../config.php';
+
+// Buscar usuário atual (se logado)
+$current = getCurrentUser();
+
+// Dados default para visitantes
 $user_profile = [
-    'name' => 'Gustavo',
-    'bio' => 'Gosto muito de ouvir música, shoegaze, grunge, alternativo, rap, trap, indie',
-    'connections' => 999999,
-    'cover_image' => '',
-    'profile_image' => ''
+    'name' => $current ? ($current['full_name'] ?: $current['username']) : 'Convidado',
+    'bio' => $current ? ($current['bio'] ?: 'Sem bio ainda.') : 'Faça login para ver e editar seu perfil.',
+    'connections' => 0,
+    'cover_image' => $current && !empty($current['cover_image']) ? ($base_path . 'uploads/' . $current['cover_image']) : '',
+    'profile_image' => $current && !empty($current['profile_image']) ? ($base_path . 'uploads/' . $current['profile_image']) : ''
 ];
 
 $liked_albums = [
@@ -142,7 +147,8 @@ include '../includes/header.php';
     <div class="edit-modal-content">
         <h3>Editar Perfil</h3>
         
-        <form id="profile-edit-form" data-validate>
+        <form id="profile-edit-form" action="../perfil/update_profile.php" method="POST" data-validate>
+            <input type="hidden" name="csrf_token" value="<?php echo htmlspecialchars($_SESSION['csrf_token'] ?? generateCSRFToken()); ?>">
             <!-- Campos de Texto -->
             <div class="mb-3">
                 <label for="edit-name">Nome</label>
@@ -182,3 +188,68 @@ include '../includes/header.php';
 <?php include '../includes/chat-sidebar.php'; ?>
 
 <?php include '../includes/footer.php'; ?>
+
+<script>
+(function(){
+    function csrf() {
+        var meta = document.querySelector('meta[name="csrf-token"]');
+        return meta ? meta.getAttribute('content') : (document.querySelector('input[name="csrf_token"]').value || '');
+    }
+
+    const avatarInput = document.getElementById('upload-avatar');
+    const coverInput = document.getElementById('upload-cover');
+    const avatarPreview = document.getElementById('avatar-preview');
+    const coverPreview = document.getElementById('cover-crop-preview');
+    const profilePic = document.querySelector('.profile-picture');
+    const coverPhoto = document.querySelector('.cover-photo');
+
+    function uploadFile(url, fieldName, file) {
+        const fd = new FormData();
+        fd.append(fieldName, file);
+        fd.append('csrf_token', csrf());
+        return fetch(url, { method: 'POST', body: fd }).then(async (r)=>{
+            const data = await r.json().catch(()=>({}));
+            if (!r.ok || !data.ok) throw new Error(data.error || 'Falha no upload');
+            return data.path;
+        });
+    }
+
+    if (avatarInput) {
+        avatarInput.addEventListener('change', function(){
+            const f = this.files && this.files[0];
+            if (!f) return;
+            // Preview local
+            const reader = new FileReader();
+            reader.onload = function(e){
+                if (avatarPreview) avatarPreview.style.backgroundImage = 'url(' + e.target.result + ')';
+            };
+            reader.readAsDataURL(f);
+
+            uploadFile('../perfil/upload_avatar.php', 'avatar', f)
+                .then(function(path){
+                    if (profilePic) profilePic.style.backgroundImage = 'url(' + ('../' + path) + ')';
+                })
+                .catch(function(err){ alert(err.message); });
+        });
+    }
+
+    if (coverInput) {
+        coverInput.addEventListener('change', function(){
+            const f = this.files && this.files[0];
+            if (!f) return;
+            // Preview local
+            const reader = new FileReader();
+            reader.onload = function(e){
+                if (coverPreview) coverPreview.src = e.target.result;
+            };
+            reader.readAsDataURL(f);
+
+            uploadFile('../perfil/upload_cover.php', 'cover', f)
+                .then(function(path){
+                    if (coverPhoto) coverPhoto.style.backgroundImage = 'url(' + ('../' + path) + ')';
+                })
+                .catch(function(err){ alert(err.message); });
+        });
+    }
+})();
+</script>

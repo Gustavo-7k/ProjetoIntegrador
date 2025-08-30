@@ -9,14 +9,43 @@ title Anthems - Docker Quickstart
 REM Ensure script directory as CWD
 pushd "%~dp0"
 
-REM Ensure docker-compose.yml exists in this folder
-if not exist "docker-compose.yml" (
-    echo [ERROR] docker-compose.yml nao encontrado nesta pasta:
-    echo   %CD%
-    echo(
-    echo Mova este script para a raiz do projeto (onde esta o docker-compose.yml)
-    echo ou execute a partir da pasta correta.
-    goto :end
+REM Ensure compose file exists in this folder (docker-compose.yml or compose.yaml)
+REM Prefer compose.yaml if present; fallback to docker-compose.yml
+set "COMPOSE_FILE=compose.yaml"
+if not exist "%COMPOSE_FILE%" (
+    if exist "docker-compose.yml" (
+        set "COMPOSE_FILE=docker-compose.yml"
+    ) else (
+        echo [ERROR] Nenhum arquivo de compose encontrado nesta pasta:
+        echo   %CD%
+        echo(
+        echo Esperado: compose.yaml ou docker-compose.yml
+        goto :end
+    )
+)
+
+REM If selected file is zero bytes, try the other name
+for %%F in ("%COMPOSE_FILE%") do set "_CF_SIZE=%%~zF"
+if "%_CF_SIZE%"=="0" (
+    if /i "%COMPOSE_FILE%"=="compose.yaml" (
+        if exist "docker-compose.yml" (
+            for %%G in ("docker-compose.yml") do if not "%%~zG"=="0" set "COMPOSE_FILE=docker-compose.yml"
+        )
+    ) else (
+        if exist "compose.yaml" (
+            for %%G in ("compose.yaml") do if not "%%~zG"=="0" set "COMPOSE_FILE=compose.yaml"
+        )
+    )
+)
+
+REM Sanity check: render config before up; if fails and alternate exists, try alternate
+%COMPOSE% -f "%COMPOSE_FILE" config > nul 2>&1
+if not %errorlevel%==0 (
+    if /i not "%COMPOSE_FILE%"=="compose.yaml" if exist "compose.yaml" (
+        %COMPOSE% -f compose.yaml config > nul 2>&1 && set "COMPOSE_FILE=compose.yaml"
+    ) else if /i not "%COMPOSE_FILE%"=="docker-compose.yml" if exist "docker-compose.yml" (
+        %COMPOSE% -f docker-compose.yml config > nul 2>&1 && set "COMPOSE_FILE=docker-compose.yml"
+    )
 )
 
 REM Detect compose command (v1 or v2)
@@ -55,8 +84,8 @@ if not exist ".env" (
 )
 
 REM Bring stack up (build if needed)
-echo [START] Starting containers (this may take a minute)...
-%COMPOSE% up -d --build
+echo [START] Starting containers with %COMPOSE_FILE% (this may take a minute)...
+%COMPOSE% -f "%COMPOSE_FILE" up -d --build
 if %errorlevel% neq 0 (
     echo [ERROR] Failed to start containers.
     goto :end
