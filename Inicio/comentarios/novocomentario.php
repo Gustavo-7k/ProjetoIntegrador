@@ -1,4 +1,6 @@
 <?php
+require_once __DIR__ . '/../config.php';
+requireAuth();
 // Configurações da página
 $page_title = "NTHMS - Anthems | Novo Comentário";
 $active_page = "novo_comentario";

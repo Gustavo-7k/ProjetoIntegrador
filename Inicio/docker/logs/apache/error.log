@@ -15,3 +15,18 @@ AH00558: apache2: Could not reliably determine the server's fully qualified doma
 [Sat Aug 30 19:36:30.311686 2025] [mpm_prefork:notice] [pid 1:tid 1] AH00163: Apache/2.4.65 (Debian) OpenSSL/3.5.1 configured -- resuming normal operations
 [Sat Aug 30 19:36:30.314697 2025] [core:notice] [pid 1:tid 1] AH00094: Command line: 'apache2 -D FOREGROUND'
 [Sat Aug 30 19:43:51.438306 2025] [mpm_prefork:notice] [pid 1:tid 1] AH00170: caught SIGWINCH, shutting down gracefully
+[Sat Aug 30 19:44:16.978288 2025] [mpm_prefork:notice] [pid 1:tid 1] AH00163: Apache/2.4.65 (Debian) OpenSSL/3.5.1 configured -- resuming normal operations
+[Sat Aug 30 19:44:16.979019 2025] [core:notice] [pid 1:tid 1] AH00094: Command line: 'apache2 -D FOREGROUND'
+[Sun Aug 31 17:16:31.304358 2025] [mpm_prefork:notice] [pid 1:tid 1] AH00170: caught SIGWINCH, shutting down gracefully
+[Thu Sep 25 12:58:23.381309 2025] [mpm_prefork:notice] [pid 1:tid 1] AH00163: Apache/2.4.65 (Debian) OpenSSL/3.5.1 configured -- resuming normal operations
+[Thu Sep 25 12:58:23.381920 2025] [core:notice] [pid 1:tid 1] AH00094: Command line: 'apache2 -D FOREGROUND'
+[Thu Sep 25 13:39:51.988056 2025] [mpm_prefork:notice] [pid 1:tid 1] AH00170: caught SIGWINCH, shutting down gracefully
+[Thu Oct 09 13:39:58.417138 2025] [mpm_prefork:notice] [pid 1:tid 1] AH00163: Apache/2.4.65 (Debian) OpenSSL/3.5.1 configured -- resuming normal operations
+[Thu Oct 09 13:39:58.417855 2025] [core:notice] [pid 1:tid 1] AH00094: Command line: 'apache2 -D FOREGROUND'
+[Thu Oct 09 14:06:32.611099 2025] [mpm_prefork:notice] [pid 1:tid 1] AH00170: caught SIGWINCH, shutting down gracefully
+[Thu Oct 09 14:06:34.382428 2025] [mpm_prefork:notice] [pid 1:tid 1] AH00163: Apache/2.4.65 (Debian) OpenSSL/3.5.1 configured -- resuming normal operations
+[Thu Oct 09 14:06:34.382757 2025] [core:notice] [pid 1:tid 1] AH00094: Command line: 'apache2 -D FOREGROUND'
+[Sat Oct 11 22:07:25.879663 2025] [mpm_prefork:notice] [pid 1:tid 1] AH00170: caught SIGWINCH, shutting down gracefully
+[Mon Oct 13 10:26:13.368331 2025] [mpm_prefork:notice] [pid 1:tid 1] AH00163: Apache/2.4.65 (Debian) OpenSSL/3.5.1 configured -- resuming normal operations
+[Mon Oct 13 10:26:13.369025 2025] [core:notice] [pid 1:tid 1] AH00094: Command line: 'apache2 -D FOREGROUND'
+[Mon Oct 13 10:34:45.607204 2025] [mpm_prefork:notice] [pid 1:tid 1] AH00170: caught SIGWINCH, shutting down gracefully

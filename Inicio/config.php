@@ -102,7 +102,7 @@ function logActivity($message, $level = 'INFO') {
 function redirectTo($url, $statusCode = 302) {
     // Validar URL para prevenir redirecionamento aberto
     if (!filter_var($url, FILTER_VALIDATE_URL) && !preg_match('/^\/[^\/]/', $url)) {
-        $url = 'inicio.php';
+        $url = 'login/login.php';
     }
     
     header("Location: $url", true, $statusCode);
@@ -174,7 +174,8 @@ function validateUpload($file) {
 // Middleware de autenticação
 function requireAuth() {
     if (!isLoggedIn()) {
-        redirectTo('login/login.php');
+        header('Location: ../login/login.php');
+        exit;
     }
 }
 

@@ -1,13 +1,8 @@
 <?php
 require_once __DIR__ . '/../config.php';
+requireAuth();
 
-// Verificar se o usuário está logado
-if (!isset($_SESSION['user_id'])) {
-    header('Location: ../login/login.php');
-    exit;
-}
-
-$usuario = obterDadosUsuario();
+$usuario = getCurrentUser();
 
 // Comentários das conexões (placeholder - implementar com banco de dados)
 $comentarios = [

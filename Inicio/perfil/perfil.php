@@ -1,4 +1,6 @@
 <?php
+require_once __DIR__ . '/../config.php';
+requireAuth();
 // Configurações da página
 $page_title = "NTHMS - Anthems | Perfil";
 $active_page = "perfil";
@@ -14,9 +16,7 @@ $additional_js = [
     'https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.12/cropper.min.js'
 ];
 
-require_once __DIR__ . '/../config.php';
-
-// Buscar usuário atual (se logado)
+// Buscar usuário atual
 $current = getCurrentUser();
 
 // Dados default para visitantes
