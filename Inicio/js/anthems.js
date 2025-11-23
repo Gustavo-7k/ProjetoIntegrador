@@ -32,118 +32,13 @@ const Anthems = {
 // ========================================
 // MÓDULO DE CHAT
 // ========================================
+// Chat feature removed: provide a harmless stub for compatibility.
 Anthems.chat = {
-    sidebar: null,
-    overlay: null,
-    
-    init: function() {
-        this.sidebar = document.querySelector('.chat-sidebar, #chat-sidebar');
-        this.overlay = document.querySelector('.chat-overlay, #chat-overlay');
-        this.bindEvents();
-    },
-    
-    bindEvents: function() {
-        // Botão de abrir chat
-        const openBtn = document.getElementById('open-chat-sidebar');
-        if (openBtn) {
-            openBtn.addEventListener('click', (e) => {
-                e.preventDefault();
-                this.open();
-            });
-        }
-        
-        // Fechar ao clicar no overlay
-        if (this.overlay) {
-            this.overlay.addEventListener('click', () => {
-                this.close();
-            });
-        }
-        
-        // Fechar com ESC
-        document.addEventListener('keydown', (e) => {
-            if (e.key === 'Escape' && Anthems.state.chatSidebarOpen) {
-                this.close();
-            }
-        });
-        
-        // Busca no chat
-        const searchInput = document.getElementById('chat-search-input');
-        if (searchInput) {
-            let searchTimeout;
-            searchInput.addEventListener('input', (e) => {
-                clearTimeout(searchTimeout);
-                searchTimeout = setTimeout(() => {
-                    this.filterContacts(e.target.value);
-                }, Anthems.config.searchDelay);
-            });
-        }
-        
-        // Cliques nos contatos
-        const contactItems = document.querySelectorAll('.contact-item');
-        contactItems.forEach(item => {
-            item.addEventListener('click', () => {
-                const userId = item.dataset.user || item.dataset.group;
-                this.selectContact(userId);
-            });
-        });
-    },
-    
-    open: function() {
-        if (!this.sidebar) return;
-        
-        this.sidebar.style.right = '0';
-        this.sidebar.classList.add('active');
-        
-        if (this.overlay) {
-            this.overlay.style.display = 'block';
-        }
-        
-        Anthems.state.chatSidebarOpen = true;
-        document.body.style.overflow = 'hidden'; // Previne scroll do body
-    },
-    
-    close: function() {
-        if (!this.sidebar) return;
-        
-        this.sidebar.style.right = `-${Anthems.config.chatSidebarWidth}px`;
-        this.sidebar.classList.remove('active');
-        
-        if (this.overlay) {
-            this.overlay.style.display = 'none';
-        }
-        
-        Anthems.state.chatSidebarOpen = false;
-        document.body.style.overflow = ''; // Restaura scroll do body
-    },
-    
-    filterContacts: function(query) {
-        const contacts = document.querySelectorAll('.contact-item');
-        const searchTerm = query.toLowerCase().trim();
-        
-        contacts.forEach(contact => {
-            const name = contact.querySelector('.contact-info p');
-            if (name) {
-                const contactName = name.textContent.toLowerCase();
-                const shouldShow = searchTerm === '' || contactName.includes(searchTerm);
-                contact.style.display = shouldShow ? 'flex' : 'none';
-            }
-        });
-    },
-    
-    selectContact: function(userId) {
-        // Remove seleção anterior
-        document.querySelectorAll('.contact-item.selected').forEach(item => {
-            item.classList.remove('selected');
-        });
-        
-        // Adiciona seleção atual
-        const selectedContact = document.querySelector(`[data-user="${userId}"], [data-group="${userId}"]`);
-        if (selectedContact) {
-            selectedContact.classList.add('selected');
-            console.log('Contato selecionado:', userId);
-            // Aqui você pode implementar a abertura do chat específico
-        }
-    }
+    init: function() {},
+    open: function() {},
+    close: function() {},
+    filterContacts: function() {},
+    selectContact: function() {}
 };
 
 // ========================================

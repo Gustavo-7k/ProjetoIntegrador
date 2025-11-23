@@ -107,11 +107,7 @@ $pageTitle = 'Denúncias - Administração - Anthems';
                     <li class="nav-item"><a class="nav-link" href="../comentarios/VerComentariosConexoes.php">Conexões</a></li>
                     <li class="nav-item"><a class="nav-link" href="../comentarios/novocomentario.php">Novo Comentário</a></li>
                     <li class="nav-item"><a class="nav-link" href="../perfil/perfil.php">Usuário</a></li>
-                    <li class="nav-item dropdown">
-                        <a class="nav-link" href="#" id="open-chat-sidebar" style="padding-top: 8px;">
-                            <img src="../img/chaticon.png" alt="Chat" style="height: 30px;">
-                        </a>
-                    </li>
+                    <!-- Chat removed -->
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
                             <img src="../img/notificacaoicon.png" alt="Notificações" style="height: 30px; margin-bottom: 3px;">

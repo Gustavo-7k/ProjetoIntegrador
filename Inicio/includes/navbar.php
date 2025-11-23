@@ -46,12 +46,7 @@ $is_admin = isset($is_admin) && $is_admin;
                                   href="/perfil/perfil.php">Usuario</a>
                 </li>
                 
-                <!-- Chat Icon -->
-                <li class="nav-item dropdown">
-                    <a class="nav-link nav-chat-icon" href="#" id="open-chat-sidebar" role="button">
-                        <img src="/img/chaticon.png" alt="Chat" class="nav-icon">
-                    </a>
-                </li>
+                <!-- Chat removed -->
                 
                 <!-- Notifications Dropdown -->
                 <li class="nav-item dropdown">
