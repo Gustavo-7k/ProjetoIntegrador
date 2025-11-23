@@ -12,9 +12,15 @@ $remember = !empty($_POST['remember_me']);
 
 // Detectar requisição AJAX (fetch/XmlHttpRequest) ou aceitação de JSON
 $isAjax = false;
+// Detectar requisição AJAX de forma robusta:
+// 1) cabeçalho X-Requested-With
+// 2) header Accept contendo application/json
+// 3) campo _ajax no corpo (adicionado pelo JS)
 if (!empty($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) === 'xmlhttprequest') {
     $isAjax = true;
 } elseif (!empty($_SERVER['HTTP_ACCEPT']) && strpos($_SERVER['HTTP_ACCEPT'], 'application/json') !== false) {
+    $isAjax = true;
+} elseif (!empty($_POST['_ajax']) && $_POST['_ajax'] == '1') {
     $isAjax = true;
 }
 
@@ -47,7 +53,8 @@ $pdo->prepare('UPDATE users SET last_login = NOW() WHERE id = ?')->execute([$use
 
 // Opção de lembrar (sessão mais longa)
 if ($remember) {
-    ini_set('session.gc_maxlifetime', SESSION_LIFETIME);
+    // Evitar chamado a ini_set() quando a sessão já estiver ativa (gera warning)
+    // O suficiente para estender o cookie de sessão é redefinir o cookie com novo prazo
     setcookie(session_name(), session_id(), time() + SESSION_LIFETIME, '/');
 }
 
@@ -56,4 +63,3 @@ if ($isAjax) {
 }
 
 redirectTo(APP_URL . 'inicio.php');
-?>

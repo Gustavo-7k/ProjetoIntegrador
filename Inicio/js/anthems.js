@@ -541,6 +541,9 @@ Anthems.forms = {
     
     submitFormAjax: function(form) {
         const formData = new FormData(form);
+        // Marcar explicitamente a requisição como AJAX para servidores que não recebem cabeçalhos
+        // (isso evita que o servidor faça redirect em vez de retornar JSON)
+        formData.append('_ajax', '1');
         const url = form.action || window.location.href;
         
         // Mostrar loading

@@ -3,6 +3,11 @@
  * Configurações gerais da aplicação Anthems
  */
 
+// Iniciar buffer de saída para capturar saídas acidentais (BOM/echo/warnings)
+if (!ob_get_level()) {
+    ob_start();
+}
+
 // Configurações do banco de dados (suporta variáveis de ambiente)
 define('DB_HOST', getenv('DB_HOST') ?: 'anthems-db');
 define('DB_NAME', getenv('DB_DATABASE') ?: 'anthems_db');
@@ -71,6 +76,12 @@ function validateCSRFToken($token) {
     return isset($_SESSION['csrf_token']) && hash_equals($_SESSION['csrf_token'], $token);
 }
 
+// Função compatível com templates em português: gera meta tag com o token CSRF
+function gerarCSRFMeta() {
+    $token = generateCSRFToken();
+    return '<meta name="csrf-token" content="' . htmlspecialchars($token, ENT_QUOTES, 'UTF-8') . '">';
+}
+
 // Função para sanitizar entrada
 function sanitizeInput($input) {
     return htmlspecialchars(trim($input), ENT_QUOTES, 'UTF-8');
@@ -95,7 +106,11 @@ function verifyPassword($password, $hash) {
 function logActivity($message, $level = 'INFO') {
     $timestamp = date('Y-m-d H:i:s');
     $logMessage = "[$timestamp] [$level] $message" . PHP_EOL;
-    file_put_contents(__DIR__ . '/logs/app.log', $logMessage, FILE_APPEND | LOCK_EX);
+    $logDir = __DIR__ . '/logs';
+    if (!is_dir($logDir)) {
+        @mkdir($logDir, 0755, true);
+    }
+    @file_put_contents($logDir . '/app.log', $logMessage, FILE_APPEND | LOCK_EX);
 }
 
 // Função para redirecionamento seguro
@@ -145,8 +160,25 @@ function formatDate($date, $format = 'd/m/Y H:i') {
 // Função para enviar resposta JSON
 function sendJSONResponse($data, $statusCode = 200) {
     http_response_code($statusCode);
-    header('Content-Type: application/json');
-    echo json_encode($data);
+
+    // Limpar quaisquer buffers de saída para evitar conteúdo extra antes do JSON
+    // Temporariamente desativar a exibição de erros para prevenir que avisos/notices
+    // sejam emitidos antes do JSON (o que quebraria o parse no cliente).
+    $displayErrors = ini_get('display_errors');
+    $oldErrorReporting = error_reporting();
+    ini_set('display_errors', '0');
+    error_reporting(0);
+
+    while (ob_get_level() > 0) {
+        @ob_end_clean();
+    }
+
+    header('Content-Type: application/json; charset=utf-8');
+    echo json_encode($data, JSON_UNESCAPED_UNICODE);
+
+    // Restaurar as configurações originais
+    error_reporting($oldErrorReporting);
+    ini_set('display_errors', $displayErrors);
     exit;
 }
 
@@ -187,4 +219,4 @@ function requireAdmin() {
         die('Acesso negado. Permissões de administrador necessárias.');
     }
 }
-?>
+
