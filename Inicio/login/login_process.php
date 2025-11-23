@@ -6,11 +6,23 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     exit('Método não permitido');
 }
 
-$email = trim($_POST['email'] ?? '');
+$email = sanitizeInput(trim($_POST['email'] ?? ''));
 $password = $_POST['password'] ?? '';
 $remember = !empty($_POST['remember_me']);
 
+// Detectar requisição AJAX (fetch/XmlHttpRequest) ou aceitação de JSON
+$isAjax = false;
+if (!empty($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) === 'xmlhttprequest') {
+    $isAjax = true;
+} elseif (!empty($_SERVER['HTTP_ACCEPT']) && strpos($_SERVER['HTTP_ACCEPT'], 'application/json') !== false) {
+    $isAjax = true;
+}
+
+// Validação básica
 if (!isValidEmail($email) || $password === '') {
+    if ($isAjax) {
+        sendJSONResponse(['success' => false, 'message' => 'Email ou senha inválidos.'], 400);
+    }
     redirectTo(APP_URL . 'login/login.php?error=credenciais');
 }
 
@@ -20,6 +32,9 @@ $stmt->execute([$email]);
 $user = $stmt->fetch();
 
 if (!$user || !$user['active'] || !verifyPassword($password, $user['password_hash'])) {
+    if ($isAjax) {
+        sendJSONResponse(['success' => false, 'message' => 'Credenciais inválidas.'], 401);
+    }
     redirectTo(APP_URL . 'login/login.php?error=credenciais');
 }
 
@@ -34,6 +49,10 @@ $pdo->prepare('UPDATE users SET last_login = NOW() WHERE id = ?')->execute([$use
 if ($remember) {
     ini_set('session.gc_maxlifetime', SESSION_LIFETIME);
     setcookie(session_name(), session_id(), time() + SESSION_LIFETIME, '/');
+}
+
+if ($isAjax) {
+    sendJSONResponse(['success' => true, 'message' => 'Login realizado com sucesso.', 'redirect' => APP_URL . 'inicio.php']);
 }
 
 redirectTo(APP_URL . 'inicio.php');

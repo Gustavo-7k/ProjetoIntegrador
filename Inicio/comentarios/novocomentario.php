@@ -31,7 +31,9 @@ include '../includes/header.php';
             </div>
             
             <div class="mb-4">
+                <div class=text-center mb-3>
                 <label for="buscaAlbum" class="form-label espaco-label">Procure o Álbum que gostaria:</label>
+                </div>
                 <input class="form-control input-largo mx-auto" 
                        list="albuns" 
                        id="buscaAlbum" 

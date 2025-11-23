@@ -70,6 +70,14 @@ $is_admin = isset($is_admin) && $is_admin;
                         </div>
                     </div>
                 </li>
+                <?php if (isLoggedIn()): ?>
+                    <li class="nav-item d-flex align-items-center">
+                        <form method="POST" action="/login/logout.php" class="mb-0">
+                            <input type="hidden" name="csrf_token" value="<?php echo e(generateCSRFToken()); ?>">
+                            <button type="submit" class="btn btn-outline-light btn-sm ms-2">Sair</button>
+                        </form>
+                    </li>
+                <?php endif; ?>
             </ul>
         </div>
     </div>

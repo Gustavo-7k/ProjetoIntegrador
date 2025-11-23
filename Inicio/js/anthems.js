@@ -545,20 +545,45 @@ Anthems.forms = {
         
         // Mostrar loading
         this.showFormLoading(form, true);
-        
         fetch(url, {
             method: 'POST',
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest',
+                'Accept': 'application/json'
+            },
             body: formData
         })
-        .then(response => response.json())
-        .then(data => {
+        .then(response => {
+            return response.text().then(text => ({ ok: response.ok, status: response.status, text }));
+        })
+        .then(result => {
             this.showFormLoading(form, false);
-            
+
+            if (!result.ok) {
+                const serverMsg = result.text ? `Erro do servidor (${result.status}).` : `Erro do servidor (${result.status}).`;
+                this.showFormError(form, serverMsg);
+                console.error('Server error response:', result.status, result.text);
+                return;
+            }
+
+            let data;
+            try {
+                data = JSON.parse(result.text || '{}');
+            } catch (e) {
+                this.showFormError(form, 'Resposta inválida do servidor.');
+                console.error('Invalid JSON response:', result.text);
+                return;
+            }
+
             if (data.success) {
-                this.showFormSuccess(form, data.message);
+                this.showFormSuccess(form, data.message || 'Operação realizada com sucesso.');
                 form.reset();
+                if (data.redirect) {
+                    // Pequeno delay para o usuário ver a mensagem antes de redirecionar
+                    setTimeout(() => { window.location.href = data.redirect; }, 600);
+                }
             } else {
-                this.showFormError(form, data.message);
+                this.showFormError(form, data.message || 'Erro ao processar solicitação.');
             }
         })
         .catch(error => {
