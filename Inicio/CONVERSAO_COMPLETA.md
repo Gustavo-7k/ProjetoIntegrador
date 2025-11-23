@@ -6,7 +6,6 @@
 1. **inicio.html** → **inicio.php**
    - Sistema de includes implementado
    - Navbar dinâmica com detecção de admin
-   - Chat sidebar responsivo
    - CSS centralizado aplicado
 
 2. **login/login.html** → **login/login.php**
@@ -88,7 +87,6 @@
 ### ✅ SISTEMA DE INCLUDES
 - **includes/header.php** - Cabeçalho comum
 - **includes/navbar.php** - Navegação dinâmica
-- **includes/chat-sidebar.php** - Sidebar de chat
 - **includes/footer.php** - Rodapé comum
 
 ### ✅ ARQUIVOS DE CONFIGURAÇÃO
@@ -124,7 +122,6 @@
 - ✅ Perfis de usuário e artistas
 - ✅ Sistema de comentários
 - ✅ Notificações dinâmicas
-- ✅ Chat sidebar
 - ✅ Sistema administrativo
 - ✅ Favoritos e curtidas
 

@@ -50,9 +50,7 @@
     height: 30px;
 }
 
-.nav-chat-icon {
-    padding-top: 8px;
-}
+/* nav chat icon removed */
 
 .nav-notification-icon {
     margin-bottom: 3px;
@@ -82,99 +80,7 @@
     text-align: center;
 }
 
-/* ========================================
-   CHAT SIDEBAR
-   ======================================== */
-.chat-sidebar {
-    position: fixed;
-    top: 0;
-    right: -350px;
-    width: 350px;
-    height: 100vh;
-    background-color: var(--primary-color);
-    box-shadow: -5px 0 15px var(--shadow-light);
-    transition: right 0.3s ease;
-    z-index: 1000;
-    padding-top: 70px;
-}
-
-.chat-sidebar.active {
-    right: 0;
-}
-
-.chat-header {
-    padding: 15px;
-    border-bottom: 1px solid var(--border-light);
-}
-
-.chat-header h5 {
-    color: var(--text-white);
-    margin: 0;
-}
-
-.chat-search {
-    padding: 15px;
-    border-bottom: 1px solid var(--border-light);
-}
-
-.chat-content {
-    overflow-y: auto;
-    height: calc(100vh - 180px);
-}
-
-.chat-section {
-    padding: 15px;
-    border-bottom: 1px solid var(--border-light);
-}
-
-.chat-section h6 {
-    color: var(--text-white);
-    margin: 0 0 10px 0;
-}
-
-.chat-contacts {
-    margin-bottom: 15px;
-}
-
-.contact-item {
-    display: flex;
-    align-items: center;
-    padding: 8px 0;
-    cursor: pointer;
-}
-
-.contact-avatar {
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-    margin-right: 10px;
-}
-
-.contact-avatar.primary { background-color: var(--primary-light); }
-.contact-avatar.secondary { background-color: var(--secondary-light); }
-.contact-avatar.accent { background-color: var(--accent-light); }
-.contact-avatar.success { background-color: var(--success-light); }
-
-.contact-info p {
-    color: var(--text-white);
-    margin: 0;
-    font-weight: 500;
-}
-
-.contact-info small {
-    color: var(--text-gray);
-}
-
-.chat-overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100vw;
-    height: 100vh;
-    background-color: var(--shadow-overlay);
-    z-index: 999;
-    display: none;
-}
+/* Chat styles removed */
 
 /* ========================================
    PERFIL
@@ -630,10 +536,7 @@
 
 /* Tablets */
 @media (min-width: 576px) and (max-width: 767px) {
-    .chat-sidebar {
-        width: 320px;
-        right: -320px;
-    }
+    /* chat-sidebar removed */
     
     .albums-grid {
         grid-template-columns: repeat(3, 1fr);
@@ -703,10 +606,6 @@
 
 .profile-container {
     animation: fadeIn 0.5s ease-out;
-}
-
-.chat-sidebar {
-    transition: right 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .edit-btn,
@@ -1051,7 +950,6 @@
    ======================================== */
 @media print {
     .navbar,
-    .chat-sidebar,
     .edit-btn,
     .connection-btn,
     .edit-modal,

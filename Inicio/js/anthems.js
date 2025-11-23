@@ -457,8 +457,22 @@ Anthems.forms = {
         .then(result => {
             this.showFormLoading(form, false);
 
+            // Mesmo que o servidor retorne um status não-2xx (ex.: 401),
+            // tentamos parsear o JSON de resposta para exibir mensagens
+            // amigáveis enviadas pelo backend (por exemplo: "Credenciais inválidas.").
             if (!result.ok) {
-                const serverMsg = result.text ? `Erro do servidor (${result.status}).` : `Erro do servidor (${result.status}).`;
+                let serverMsg = `Erro do servidor (${result.status}).`;
+                if (result.text) {
+                    try {
+                        const parsed = JSON.parse(result.text);
+                        if (parsed && parsed.message) {
+                            serverMsg = parsed.message;
+                        }
+                    } catch (e) {
+                        // resposta não JSON — manter mensagem genérica
+                        console.error('Invalid JSON in error response:', result.text);
+                    }
+                }
                 this.showFormError(form, serverMsg);
                 console.error('Server error response:', result.status, result.text);
                 return;

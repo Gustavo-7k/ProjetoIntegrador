@@ -9,5 +9,6 @@ $base_path = isset($base_path) ? $base_path : '';
 // references to this file across templates.
 ?>
 
-<!-- Chat Overlay -->
-<div class="chat-overlay" id="chat-overlay"></div>
+<?php
+// chat-sidebar kept intentionally empty
+?>
