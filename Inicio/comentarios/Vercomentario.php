@@ -46,7 +46,6 @@ $forum_comentarios = [
 
 // Processar novo comentário
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['novo_comentario'])) {
-    if (verificarCSRF($_POST['csrf_token'])) {
         $novo_comentario = sanitizeInput($_POST['comentario']);
         
         if (!empty($novo_comentario)) {
@@ -71,7 +70,7 @@ $pageTitle = 'Comentário - Anthems';
     <link href="../css/estilos.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Medula+One&display=swap" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.0/font/bootstrap-icons.css" rel="stylesheet">
-    <?= gerarCSRFMeta() ?>
+    <!-- CSRF meta removed -->
 </head>
 <body>
     <?php include __DIR__ . '/../includes/header.php'; ?>
@@ -101,7 +100,7 @@ $pageTitle = 'Comentário - Anthems';
             
             <!-- Comment form -->
             <form class="comment-form" method="POST">
-                <input type="hidden" name="csrf_token" value="<?= gerarCSRF() ?>">
+                <!-- CSRF hidden input removed -->
                 <textarea name="comentario" placeholder="Adicione seu comentário..." required></textarea>
                 <button type="submit" name="novo_comentario" class="btn btn-post">Postar Comentário</button>
             </form>
@@ -182,8 +181,7 @@ $pageTitle = 'Comentário - Anthems';
             fetch('../api/denunciar-comentario.php', {
                 method: 'POST',
                 headers: {
-                    'Content-Type': 'application/json',
-                    'X-CSRF-Token': document.querySelector('meta[name="csrf-token"]').content
+                    'Content-Type': 'application/json'
                 },
                 body: JSON.stringify({
                     comentario_id: currentReportId,

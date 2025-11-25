@@ -20,11 +20,9 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
 // Obter dados JSON
 $input = json_decode(file_get_contents('php://input'), true);
 
-// Verificar CSRF token
-if (!isset($input['comentario_id']) || !verificarCSRF($_SERVER['HTTP_X_CSRF_TOKEN'])) {
-    http_response_code(403);
-    echo json_encode(['success' => false, 'message' => 'Token CSRF inválido']);
-    exit;
+// Verificar dados necessários
+if (!isset($input['comentario_id'])) {
+    sendJSONResponse(['success' => false, 'message' => 'ID de comentário inválido'], 400);
 }
 
 $comentario_id = (int)$input['comentario_id'];
@@ -32,10 +30,10 @@ $user_id = $_SESSION['user_id'];
 
 try {
     // Conectar ao banco de dados
-    $pdo = conectarBanco();
+    $pdo = getDBConnection();
     
     // Verificar se o comentário existe
-    $stmt = $pdo->prepare("SELECT id FROM comentarios WHERE id = ?");
+    $stmt = $pdo->prepare("SELECT id FROM comments WHERE id = ?");
     $stmt->execute([$comentario_id]);
     
     if (!$stmt->fetch()) {
@@ -44,41 +42,26 @@ try {
     }
     
     // Verificar se já curtiu
-    $stmt = $pdo->prepare("
-        SELECT id FROM curtidas 
-        WHERE usuario_id = ? AND comentario_id = ?
-    ");
+    $stmt = $pdo->prepare('SELECT id FROM comment_likes WHERE user_id = ? AND comment_id = ?');
     $stmt->execute([$user_id, $comentario_id]);
     $ja_curtiu = $stmt->fetch();
     
     if ($ja_curtiu) {
         // Remover curtida
-        $stmt = $pdo->prepare("
-            DELETE FROM curtidas 
-            WHERE usuario_id = ? AND comentario_id = ?
-        ");
-        $stmt->execute([$user_id, $comentario_id]);
+        $stmt = $pdo->prepare('DELETE FROM comment_likes WHERE id = ?');
+        $stmt->execute([$ja_curtiu['id']]);
     } else {
         // Adicionar curtida
-        $stmt = $pdo->prepare("
-            INSERT INTO curtidas (usuario_id, comentario_id, data_criacao) 
-            VALUES (?, ?, NOW())
-        ");
+        $stmt = $pdo->prepare('INSERT INTO comment_likes (user_id, comment_id, created_at) VALUES (?, ?, NOW())');
         $stmt->execute([$user_id, $comentario_id]);
     }
     
     // Obter total de curtidas
-    $stmt = $pdo->prepare("
-        SELECT COUNT(*) as total FROM curtidas WHERE comentario_id = ?
-    ");
+    $stmt = $pdo->prepare('SELECT COUNT(*) as total FROM comment_likes WHERE comment_id = ?');
     $stmt->execute([$comentario_id]);
     $total_curtidas = $stmt->fetchColumn();
     
-    echo json_encode([
-        'success' => true, 
-        'curtidas' => $total_curtidas,
-        'curtiu' => !$ja_curtiu
-    ]);
+    sendJSONResponse(['success' => true, 'curtidas' => $total_curtidas, 'curtiu' => !(bool)$ja_curtiu]);
     
 } catch (Exception $e) {
     error_log("Erro ao curtir comentário: " . $e->getMessage());

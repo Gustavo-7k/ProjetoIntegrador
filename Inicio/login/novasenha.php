@@ -6,7 +6,7 @@ $mensagem = '';
 $tipo_mensagem = '';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    if (verificarCSRF($_POST['csrf_token'])) {
+    // CSRF validation removed
         $email = sanitizeInput($_POST['email']);
         
         if (filter_var($email, FILTER_VALIDATE_EMAIL)) {
@@ -45,7 +45,7 @@ $pageTitle = 'Recuperar Senha - Anthems';
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="../css/estilos.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Medula+One&display=swap" rel="stylesheet">
-    <?= gerarCSRFMeta() ?>
+    <!-- CSRF meta removed -->
 </head>
 <body>
     <?php include __DIR__ . '/../includes/header.php'; ?>
@@ -108,7 +108,7 @@ $pageTitle = 'Recuperar Senha - Anthems';
                                         </div>
 
                                         <form method="POST" novalidate>
-                                            <input type="hidden" name="csrf_token" value="<?= gerarCSRF() ?>">
+                                            <!-- CSRF hidden input removed -->
                                             
                                             <div class="row gy-3 overflow-hidden">
                                                 <div class="col-12">

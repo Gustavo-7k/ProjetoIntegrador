@@ -45,7 +45,7 @@ include '../includes/header.php';
                                     
                                     <!-- Formulário de Registro -->
                                     <form action="register_process.php" method="POST" data-validate id="register-form">
-                                        <input type="hidden" name="csrf_token" value="<?php echo generateCSRFToken(); ?>">
+                                        <!-- CSRF token removed -->
                                         
                                         <div class="mb-3">
                                             <div class="form-floating">

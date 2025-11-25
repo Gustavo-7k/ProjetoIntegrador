@@ -50,7 +50,7 @@ $pageTitle = 'Comentários das Conexões - Anthems';
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="../css/estilos.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Medula+One&display=swap" rel="stylesheet">
-    <?= gerarCSRFMeta() ?>
+    <!-- CSRF meta removed -->
 </head>
 <body>
     <?php include __DIR__ . '/../includes/header.php'; ?>
@@ -103,20 +103,19 @@ $pageTitle = 'Comentários das Conexões - Anthems';
     <script>
         // Funções específicas dos comentários
         function curtirComentario(comentarioId) {
-            fetch('../api/curtir-comentario.php', {
+            fetch('/api/like-comment.php', {
                 method: 'POST',
                 headers: {
-                    'Content-Type': 'application/json',
-                    'X-CSRF-Token': document.querySelector('meta[name="csrf-token"]').content
+                    'Content-Type': 'application/json'
                 },
-                body: JSON.stringify({ comentario_id: comentarioId })
+                body: JSON.stringify({ comment_id: comentarioId })
             })
             .then(response => response.json())
             .then(data => {
                 if (data.success) {
                     // Atualizar contador de curtidas
                     const btn = event.target;
-                    btn.textContent = `Curtir (${data.curtidas})`;
+                    btn.textContent = `Curtir (${data.total || data.curtidas})`;
                     mostrarToast('Comentário curtido!');
                 } else {
                     mostrarToast('Erro ao curtir comentário', 'error');

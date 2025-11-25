@@ -7,10 +7,7 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     sendJSONResponse(['error' => 'Método não permitido'], 405);
 }
 
-$token = $_POST['csrf_token'] ?? '';
-if (!validateCSRFToken($token)) {
-    sendJSONResponse(['error' => 'Token CSRF inválido'], 403);
-}
+
 
 if (!isset($_FILES['cover'])) {
     sendJSONResponse(['error' => 'Arquivo não enviado'], 400);
@@ -38,4 +35,3 @@ $stmt = $pdo->prepare('UPDATE users SET cover_image = ?, updated_at = NOW() WHER
 $stmt->execute([$filename, $_SESSION['user_id']]);
 
 sendJSONResponse(['ok' => true, 'path' => 'uploads/' . $filename]);
-<?php

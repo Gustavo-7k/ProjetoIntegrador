@@ -7,10 +7,7 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     die('Método não permitido');
 }
 
-// Verificar token CSRF
-if (!validateCSRFToken($_POST['csrf_token'] ?? '')) {
-    sendJSONResponse(['success' => false, 'message' => 'Token de segurança inválido.'], 403);
-}
+// CSRF validation removed
 
 try {
     // Sanitizar e validar dados de entrada

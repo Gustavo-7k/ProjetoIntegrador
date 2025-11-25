@@ -61,7 +61,6 @@ $forum_comentarios = [
 
 // Processar ações administrativas
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['admin_action'])) {
-    if (verificarCSRF($_POST['csrf_token'])) {
         $acao = $_POST['admin_action'];
         $usuario_id = $_POST['usuario_id'] ?? null;
         $comentario_id = $_POST['comentario_id'] ?? null;
@@ -94,8 +93,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['admin_action'])) {
 }
 
 // Processar novo comentário
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['novo_comentario'])) {
-    if (verificarCSRF($_POST['csrf_token'])) {
+    if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['novo_comentario'])) {
         $novo_comentario = sanitizeInput($_POST['comentario']);
         
         if (!empty($novo_comentario)) {
@@ -120,7 +118,7 @@ $pageTitle = 'Administração - Comentário - Anthems';
     <link href="../css/estilos.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Medula+One&display=swap" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.0/font/bootstrap-icons.css" rel="stylesheet">
-    <?= gerarCSRFMeta() ?>
+    <!-- CSRF meta removed -->
 </head>
 <body>
     <?php include __DIR__ . '/../includes/header.php'; ?>
@@ -196,7 +194,7 @@ $pageTitle = 'Administração - Comentário - Anthems';
             
             <!-- Comment form -->
             <form class="comment-form" method="POST">
-                <input type="hidden" name="csrf_token" value="<?= gerarCSRF() ?>">
+                <!-- CSRF hidden input removed -->
                 <textarea name="comentario" placeholder="Adicione seu comentário como administrador..." required></textarea>
                 <button type="submit" name="novo_comentario" class="btn btn-post">Postar Comentário</button>
             </form>
@@ -339,14 +337,12 @@ $pageTitle = 'Administração - Comentário - Anthems';
             fetch('ADMVerComentario.php', {
                 method: 'POST',
                 headers: {
-                    'Content-Type': 'application/x-www-form-urlencoded',
-                    'X-CSRF-Token': document.querySelector('meta[name="csrf-token"]').content
+                    'Content-Type': 'application/x-www-form-urlencoded'
                 },
                 body: new URLSearchParams({
                     admin_action: currentAdminAction,
                     usuario_id: currentUserId,
                     comentario_id: currentCommentId,
-                    csrf_token: document.querySelector('meta[name="csrf-token"]').content,
                     ajax: '1'
                 })
             })

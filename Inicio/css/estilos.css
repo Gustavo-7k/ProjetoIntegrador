@@ -968,3 +968,476 @@
         display: none !important;
     }
 }
+
+/* ========================================
+   ALBUM PAGE STYLES
+   ======================================== */
+.album-page {
+    min-height: 100vh;
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+    padding: 30px 0 60px;
+}
+
+.back-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    color: var(--primary-color);
+    text-decoration: none;
+    font-weight: 500;
+    margin-bottom: 25px;
+    padding: 8px 16px;
+    border-radius: 25px;
+    background: white;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    transition: all 0.3s ease;
+}
+
+.back-btn:hover {
+    background: var(--primary-color);
+    color: white;
+    transform: translateX(-5px);
+}
+
+/* Album Header */
+.album-header {
+    background: white;
+    border-radius: 20px;
+    padding: 30px;
+    margin-bottom: 30px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+}
+
+.album-loading,
+.comments-loading {
+    text-align: center;
+    padding: 40px;
+    color: var(--text-gray);
+}
+
+.album-header-content {
+    display: flex;
+    gap: 40px;
+    align-items: flex-start;
+}
+
+.album-cover-large {
+    flex-shrink: 0;
+}
+
+.album-cover-large img {
+    width: 250px;
+    height: 250px;
+    object-fit: cover;
+    border-radius: 15px;
+    box-shadow: 0 8px 30px rgba(0,0,0,0.2);
+}
+
+.album-details {
+    flex: 1;
+}
+
+.album-title-large {
+    color: var(--primary-color);
+    font-size: 2.5rem;
+    font-weight: 700;
+    margin-bottom: 8px;
+    line-height: 1.2;
+}
+
+.album-artist-large {
+    color: var(--text-gray);
+    font-size: 1.4rem;
+    font-weight: 400;
+    margin-bottom: 20px;
+}
+
+.album-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    margin-bottom: 25px;
+}
+
+.meta-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: #555;
+    font-size: 0.95rem;
+}
+
+.meta-item svg {
+    color: var(--primary-color);
+}
+
+.album-stats {
+    display: flex;
+    gap: 20px;
+}
+
+.stat-box {
+    background: linear-gradient(135deg, var(--primary-color), var(--primary-light));
+    color: white;
+    padding: 15px 25px;
+    border-radius: 12px;
+    text-align: center;
+    min-width: 100px;
+}
+
+.stat-value {
+    display: block;
+    font-size: 1.8rem;
+    font-weight: 700;
+}
+
+.stat-label {
+    font-size: 0.85rem;
+    opacity: 0.9;
+}
+
+/* Reviews Section */
+.reviews-section {
+    background: white;
+    border-radius: 20px;
+    padding: 30px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+}
+
+.section-title {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    color: var(--primary-color);
+    font-size: 1.5rem;
+    margin-bottom: 25px;
+    padding-bottom: 15px;
+    border-bottom: 2px solid var(--primary-light);
+}
+
+.section-title svg {
+    color: var(--primary-light);
+}
+
+/* Comment Form */
+.comment-form-container {
+    margin-bottom: 30px;
+}
+
+.comment-form {
+    background: #f8f9fa;
+    padding: 25px;
+    border-radius: 15px;
+    border: 1px solid #e9ecef;
+}
+
+.form-title {
+    color: var(--primary-color);
+    font-size: 1.1rem;
+    margin-bottom: 20px;
+}
+
+.rating-container {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    margin-bottom: 20px;
+}
+
+.rating-label {
+    color: #555;
+    font-weight: 500;
+}
+
+.star-rating {
+    display: flex;
+    gap: 5px;
+}
+
+.star-rating .star {
+    font-size: 28px;
+    color: #ddd;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.star-rating .star:hover,
+.star-rating .star.hover {
+    color: #ffc107;
+    transform: scale(1.1);
+}
+
+.star-rating .star.active {
+    color: #ffc107;
+}
+
+.comment-textarea {
+    width: 100%;
+    border: 2px solid #e9ecef;
+    border-radius: 12px;
+    padding: 15px;
+    font-size: 1rem;
+    resize: vertical;
+    min-height: 120px;
+    transition: border-color 0.3s ease;
+}
+
+.comment-textarea:focus {
+    outline: none;
+    border-color: var(--primary-color);
+}
+
+.comment-textarea::placeholder {
+    color: #adb5bd;
+}
+
+.submit-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    background: var(--primary-color);
+    color: white;
+    border: none;
+    padding: 12px 25px;
+    border-radius: 25px;
+    font-size: 1rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    margin-top: 15px;
+}
+
+.submit-btn:hover {
+    background: #0f0035;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(23, 0, 69, 0.3);
+}
+
+/* Login Prompt */
+.login-prompt {
+    text-align: center;
+    padding: 40px;
+    background: #f8f9fa;
+    border-radius: 15px;
+    color: #6c757d;
+}
+
+.login-prompt svg {
+    color: var(--primary-light);
+    margin-bottom: 15px;
+}
+
+.login-prompt a {
+    color: var(--primary-color);
+    font-weight: 600;
+    text-decoration: none;
+}
+
+.login-prompt a:hover {
+    text-decoration: underline;
+}
+
+/* Comments List */
+.comments-list {
+    margin-top: 20px;
+}
+
+.no-comments {
+    text-align: center;
+    padding: 50px;
+    color: #6c757d;
+    background: #f8f9fa;
+    border-radius: 15px;
+}
+
+.comment-card {
+    background: #fafafa;
+    border-radius: 15px;
+    padding: 20px;
+    margin-bottom: 15px;
+    border: 1px solid #e9ecef;
+    transition: all 0.3s ease;
+}
+
+.comment-card:hover {
+    border-color: var(--primary-light);
+    box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+}
+
+.comment-header {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    margin-bottom: 15px;
+}
+
+.comment-avatar img {
+    width: 45px;
+    height: 45px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid var(--primary-light);
+}
+
+.comment-user-info {
+    flex: 1;
+}
+
+.comment-username {
+    display: block;
+    color: var(--primary-color);
+    font-size: 1rem;
+}
+
+.comment-date {
+    font-size: 0.85rem;
+    color: #6c757d;
+}
+
+.comment-rating {
+    color: #ffc107;
+    font-size: 1.1rem;
+    letter-spacing: 2px;
+}
+
+.comment-body {
+    color: #333;
+    line-height: 1.6;
+    margin-bottom: 15px;
+    padding: 10px 0;
+}
+
+.comment-body p {
+    margin-bottom: 10px;
+}
+
+.comment-body p:last-child {
+    margin-bottom: 0;
+}
+
+.comment-actions {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.action-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: white;
+    border: 1px solid #dee2e6;
+    color: #6c757d;
+    padding: 8px 15px;
+    border-radius: 20px;
+    font-size: 0.85rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.action-btn:hover {
+    border-color: var(--primary-color);
+    color: var(--primary-color);
+}
+
+.action-btn.like-comment:hover {
+    background: #e8f5e9;
+    border-color: #4caf50;
+    color: #4caf50;
+}
+
+.action-btn.report-comment:hover {
+    background: #ffebee;
+    border-color: #f44336;
+    color: #f44336;
+}
+
+/* Replies */
+.replies-container {
+    margin-top: 15px;
+    padding-left: 25px;
+    border-left: 3px solid var(--primary-light);
+}
+
+.comment-card.reply {
+    background: white;
+    margin-bottom: 10px;
+}
+
+/* Album Page Responsive */
+@media (max-width: 768px) {
+    .album-header-content {
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+    }
+    
+    .album-cover-large img {
+        width: 200px;
+        height: 200px;
+    }
+    
+    .album-title-large {
+        font-size: 1.8rem;
+    }
+    
+    .album-artist-large {
+        font-size: 1.2rem;
+    }
+    
+    .album-meta {
+        justify-content: center;
+    }
+    
+    .album-stats {
+        justify-content: center;
+    }
+    
+    .rating-container {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    
+    .comment-actions {
+        justify-content: flex-start;
+    }
+    
+    .action-btn {
+        padding: 6px 12px;
+        font-size: 0.8rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .album-page {
+        padding: 15px 0 40px;
+    }
+    
+    .album-header,
+    .reviews-section {
+        padding: 20px 15px;
+        border-radius: 15px;
+    }
+    
+    .album-cover-large img {
+        width: 160px;
+        height: 160px;
+    }
+    
+    .stat-box {
+        padding: 12px 18px;
+        min-width: 80px;
+    }
+    
+    .stat-value {
+        font-size: 1.4rem;
+    }
+    
+    .comment-form {
+        padding: 15px;
+    }
+    
+    .replies-container {
+        padding-left: 15px;
+    }
+}

@@ -20,10 +20,10 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
 // Obter dados JSON
 $input = json_decode(file_get_contents('php://input'), true);
 
-// Verificar CSRF token
-if (!isset($input['notificacao_id']) || !verificarCSRF($_SERVER['HTTP_X_CSRF_TOKEN'])) {
-    http_response_code(403);
-    echo json_encode(['success' => false, 'message' => 'Token CSRF inválido']);
+// Verificar dados necessários
+if (!isset($input['notificacao_id'])) {
+    http_response_code(400);
+    echo json_encode(['success' => false, 'message' => 'Dados inválidos']);
     exit;
 }
 
@@ -32,7 +32,7 @@ $user_id = $_SESSION['user_id'];
 
 try {
     // Conectar ao banco de dados
-    $pdo = conectarBanco();
+    $pdo = getDBConnection();
     
     // Verificar se a notificação existe e é uma solicitação de conexão
     $stmt = $pdo->prepare("

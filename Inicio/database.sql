@@ -53,12 +53,12 @@ CREATE TABLE IF NOT EXISTS `albums` (
     INDEX idx_rating (`average_rating`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- Tabela de comentários
 CREATE TABLE IF NOT EXISTS `comments` (
     `id` INT AUTO_INCREMENT PRIMARY KEY,
     `user_id` INT NOT NULL,
     `album_id` INT NOT NULL,
-    `rating` TINYINT NOT NULL CHECK (`rating` >= 1 AND `rating` <= 5),
+    `parent_id` INT NULL,
+    `rating` TINYINT NULL CHECK (`rating` >= 1 AND `rating` <= 5),
     `comment` TEXT NOT NULL,
     `status` ENUM('pending', 'approved', 'rejected') DEFAULT 'approved',
     `likes_count` INT DEFAULT 0,
@@ -66,7 +66,9 @@ CREATE TABLE IF NOT EXISTS `comments` (
     `updated_at` DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     FOREIGN KEY (`user_id`) REFERENCES `users`(`id`) ON DELETE CASCADE,
     FOREIGN KEY (`album_id`) REFERENCES `albums`(`id`) ON DELETE CASCADE,
+    FOREIGN KEY (`parent_id`) REFERENCES `comments`(`id`) ON DELETE CASCADE,
     INDEX idx_user_album (`user_id`, `album_id`),
+    INDEX idx_parent (`parent_id`),
     INDEX idx_status (`status`),
     INDEX idx_created (`created_at`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;

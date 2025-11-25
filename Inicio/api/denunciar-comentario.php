@@ -20,10 +20,10 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
 // Obter dados JSON
 $input = json_decode(file_get_contents('php://input'), true);
 
-// Verificar CSRF token e dados necessários
-if (!isset($input['comentario_id'], $input['motivo']) || !verificarCSRF($_SERVER['HTTP_X_CSRF_TOKEN'])) {
-    http_response_code(403);
-    echo json_encode(['success' => false, 'message' => 'Dados inválidos ou token CSRF inválido']);
+// Verificar dados necessários
+if (!isset($input['comentario_id'], $input['motivo'])) {
+    http_response_code(400);
+    echo json_encode(['success' => false, 'message' => 'Dados inválidos']);
     exit;
 }
 
@@ -39,7 +39,7 @@ if (empty(trim($motivo))) {
 
 try {
     // Conectar ao banco de dados
-    $pdo = conectarBanco();
+    $pdo = getDBConnection();
     
     // Verificar se o comentário existe
     $stmt = $pdo->prepare("SELECT id FROM comentarios WHERE id = ?");
@@ -70,10 +70,11 @@ try {
     $stmt->execute([$user_id, $comentario_id, $motivo]);
     
     // Criar notificação para administradores
-    $stmt = $pdo->prepare("
-        INSERT INTO notificacoes_admin (tipo, dados, data_criacao) 
-        VALUES ('nova_denuncia', ?, NOW())
-    ");
+    $stmt = $pdo->prepare("INSERT INTO notifications (user_id, type, title, message, related_id, created_at) VALUES (?, 'report', ?, ?, ?, NOW())");
+    // Notificar admin (fallback to user_id 1)
+    $title = 'Nova denúncia de comentário';
+    $message = 'Um comentário foi denunciado. Motivo: ' . $motivo;
+    $stmt->execute([1, $title, $message, $comentario_id]);
     $dados = json_encode([
         'denuncia_id' => $pdo->lastInsertId(),
         'comentario_id' => $comentario_id,

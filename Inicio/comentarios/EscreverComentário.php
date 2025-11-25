@@ -1,4 +1,21 @@
 <?php
+require_once __DIR__ . '/../config.php';
+// Rota antiga - redireciona para a página central de álbum (In Rainbows -> id=1)
+redirectTo(APP_URL . 'albuns/album.php?id=1');
+exit;
+
+// Conteúdo antigo mantido como referência (removido)
+?>
+$php_redirect = true;
+require_once __DIR__ . '/../config.php';
+// Redirecionar para a página de álbum centralizada
+redirectTo(APP_URL . 'albuns/album.php?id=1');
+// Se o redirecionamento falhar, continuar para a versão antiga do formulário
+if ($php_redirect) {
+    exit;
+}
+
+<?php
 // Configurações da página
 $page_title = "NTHMS - Anthems | Escrever Comentário - In Rainbows";
 $active_page = "novo_comentario";

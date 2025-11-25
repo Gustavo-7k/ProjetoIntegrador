@@ -297,9 +297,9 @@ Anthems.search = {
         
         // Dicionário de redirecionamento - pode ser carregado de um arquivo JSON
         const albumLinks = {
-            "In Rainbows": "comentarios/EscreverComentário.php",
-            "Kid A": "albuns/KidA.php",
-            "Ok Computer": "albuns/OkComputer.php"
+            "In Rainbows": "/albuns/album.php?id=1",
+            "Kid A": "/albuns/album.php?id=2",
+            "Ok Computer": "/albuns/album.php?id=3"
         };
         
         if (albumLinks[value]) {

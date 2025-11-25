@@ -12,10 +12,7 @@ if (!isLoggedIn()) {
     sendJSONResponse(['success' => false, 'message' => 'Você precisa estar logado para comentar.'], 401);
 }
 
-// Verificar token CSRF
-if (!validateCSRFToken($_POST['csrf_token'] ?? '')) {
-    sendJSONResponse(['success' => false, 'message' => 'Token de segurança inválido.'], 403);
-}
+// CSRF validation removed
 
 try {
     // Validar dados de entrada

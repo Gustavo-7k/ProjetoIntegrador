@@ -6,12 +6,6 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     http_response_code(405);
     sendJSONResponse(['error' => 'Método não permitido'], 405);
 }
-
-$token = $_POST['csrf_token'] ?? '';
-if (!validateCSRFToken($token)) {
-    sendJSONResponse(['error' => 'Token CSRF inválido'], 403);
-}
-
 if (!isset($_FILES['avatar'])) {
     sendJSONResponse(['error' => 'Arquivo não enviado'], 400);
 }

@@ -148,7 +148,7 @@ include '../includes/header.php';
         <h3>Editar Perfil</h3>
         
         <form id="profile-edit-form" action="../perfil/update_profile.php" method="POST" data-validate>
-            <input type="hidden" name="csrf_token" value="<?php echo htmlspecialchars($_SESSION['csrf_token'] ?? generateCSRFToken()); ?>">
+            <!-- CSRF token removed intentionally -->
             <!-- Campos de Texto -->
             <div class="mb-3">
                 <label for="edit-name">Nome</label>
@@ -191,10 +191,7 @@ include '../includes/header.php';
 
 <script>
 (function(){
-    function csrf() {
-        var meta = document.querySelector('meta[name="csrf-token"]');
-        return meta ? meta.getAttribute('content') : (document.querySelector('input[name="csrf_token"]').value || '');
-    }
+    function csrf() { return ''; }
 
     const avatarInput = document.getElementById('upload-avatar');
     const coverInput = document.getElementById('upload-cover');
@@ -206,7 +203,7 @@ include '../includes/header.php';
     function uploadFile(url, fieldName, file) {
         const fd = new FormData();
         fd.append(fieldName, file);
-        fd.append('csrf_token', csrf());
+        // CSRF intentionally not appended
         return fetch(url, { method: 'POST', body: fd }).then(async (r)=>{
             const data = await r.json().catch(()=>({}));
             if (!r.ok || !data.ok) throw new Error(data.error || 'Falha no upload');

@@ -2,76 +2,27 @@
 require_once __DIR__ . '/../config.php';
 
 // Verificar se o usuário está logado e é administrador
-if (!isset($_SESSION['user_id'])) {
+if (!isLoggedIn()) {
     header('Location: ../login/login.php');
     exit;
 }
 
-$usuario = obterDadosUsuario();
-
-// Verificar se é administrador
-if (!$usuario['is_admin']) {
+$usuario = getCurrentUser();
+if (!$usuario || !$usuario['is_admin']) {
     header('Location: ../inicio.php');
     exit;
 }
 
-// Buscar denúncias pendentes (placeholder - implementar com banco de dados)
-$denuncias = [
-    [
-        'id' => 1,
-        'denunciante' => 'Maria Luiza',
-        'avatar' => '../img/NTHMS.png',
-        'tipo' => 'comentario',
-        'motivo' => 'Conteúdo ofensivo',
-        'tempo' => 'Há 15 minutos',
-        'status' => 'pendente'
-    ],
-    [
-        'id' => 2,
-        'denunciante' => 'AlexWeezer',
-        'avatar' => '../img/NTHMS.png',
-        'tipo' => 'spam',
-        'motivo' => 'Spam/Propaganda',
-        'tempo' => 'Há 2 horas',
-        'status' => 'pendente'
-    ],
-    [
-        'id' => 3,
-        'denunciante' => 'Fademusica',
-        'avatar' => '../img/NTHMS.png',
-        'tipo' => 'assedio',
-        'motivo' => 'Assédio/Bullying',
-        'tempo' => 'Ontem, 18:30',
-        'status' => 'pendente'
-    ],
-    [
-        'id' => 4,
-        'denunciante' => 'MitskiLover',
-        'avatar' => '../img/NTHMS.png',
-        'tipo' => 'fake_news',
-        'motivo' => 'Informações falsas',
-        'tempo' => 'Ontem, 14:15',
-        'status' => 'pendente'
-    ],
-    [
-        'id' => 5,
-        'denunciante' => 'AliceInChainsLover911',
-        'avatar' => '../img/NTHMS.png',
-        'tipo' => 'copyright',
-        'motivo' => 'Violação de direitos autorais',
-        'tempo' => '2 dias atrás',
-        'status' => 'pendente'
-    ],
-    [
-        'id' => 6,
-        'denunciante' => 'Francisco Oceano',
-        'avatar' => '../img/NTHMS.png',
-        'tipo' => 'conteudo_impróprio',
-        'motivo' => 'Conteúdo impróprio',
-        'tempo' => '3 dias atrás',
-        'status' => 'pendente'
-    ]
-];
+// Buscar denúncias pendentes do banco
+try {
+    $pdo = getDBConnection();
+    $stmt = $pdo->prepare('SELECT r.id, r.reason, r.description, r.status, r.created_at, u.username as reporter, c.comment as commented_text, cu.username as comment_author FROM reports r JOIN users u ON r.reporter_id = u.id JOIN comments c ON r.comment_id = c.id JOIN users cu ON c.user_id = cu.id WHERE r.status = "pending" ORDER BY r.created_at DESC');
+    $stmt->execute();
+    $denuncias = $stmt->fetchAll();
+} catch (Exception $e) {
+    error_log('Erro ADMdenuncias: ' . $e->getMessage());
+    $denuncias = [];
+}
 
 $pageTitle = 'Denúncias - Administração - Anthems';
 ?>
@@ -85,7 +36,7 @@ $pageTitle = 'Denúncias - Administração - Anthems';
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="../css/estilos.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Medula+One&display=swap" rel="stylesheet">
-    <?= gerarCSRFMeta() ?>
+    <!-- CSRF meta removed -->
 </head>
 <body>
     <?php include __DIR__ . '/../includes/header.php'; ?>
@@ -196,11 +147,7 @@ $pageTitle = 'Denúncias - Administração - Anthems';
             currentReportId = reportId;
             
             // Carregar detalhes da denúncia via AJAX
-            fetch(`../api/denuncia-detalhes.php?id=${reportId}`, {
-                headers: {
-                    'X-CSRF-Token': document.querySelector('meta[name="csrf-token"]').content
-                }
-            })
+            fetch(`../api/denuncia-detalhes.php?id=${reportId}`)
             .then(response => response.json())
             .then(data => {
                 if (data.success) {
@@ -251,8 +198,7 @@ $pageTitle = 'Denúncias - Administração - Anthems';
             fetch('../api/processar-denuncia.php', {
                 method: 'POST',
                 headers: {
-                    'Content-Type': 'application/json',
-                    'X-CSRF-Token': document.querySelector('meta[name="csrf-token"]').content
+                    'Content-Type': 'application/json'
                 },
                 body: JSON.stringify({
                     denuncia_id: reportId,
@@ -289,8 +235,7 @@ $pageTitle = 'Denúncias - Administração - Anthems';
             fetch('../api/processar-denuncia.php', {
                 method: 'POST',
                 headers: {
-                    'Content-Type': 'application/json',
-                    'X-CSRF-Token': document.querySelector('meta[name="csrf-token"]').content
+                    'Content-Type': 'application/json'
                 },
                 body: JSON.stringify({
                     denuncia_id: reportId,

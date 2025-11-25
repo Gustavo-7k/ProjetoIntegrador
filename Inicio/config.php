@@ -33,7 +33,6 @@ error_reporting(E_ALL);
 ini_set('display_errors', 1);
 
 // Configurações de segurança
-define('CSRF_TOKEN_LENGTH', 32);
 define('PASSWORD_MIN_LENGTH', 6);
 define('SESSION_LIFETIME', 3600 * 24 * 7); // 7 dias
 
@@ -63,24 +62,7 @@ function getDBConnection() {
     return $pdo;
 }
 
-// Função para gerar token CSRF
-function generateCSRFToken() {
-    if (!isset($_SESSION['csrf_token'])) {
-        $_SESSION['csrf_token'] = bin2hex(random_bytes(CSRF_TOKEN_LENGTH));
-    }
-    return $_SESSION['csrf_token'];
-}
-
-// Função para validar token CSRF
-function validateCSRFToken($token) {
-    return isset($_SESSION['csrf_token']) && hash_equals($_SESSION['csrf_token'], $token);
-}
-
-// Função compatível com templates em português: gera meta tag com o token CSRF
-function gerarCSRFMeta() {
-    $token = generateCSRFToken();
-    return '<meta name="csrf-token" content="' . htmlspecialchars($token, ENT_QUOTES, 'UTF-8') . '">';
-}
+// Note: CSRF functionality removed from the project per request.
 
 // Função para sanitizar entrada
 function sanitizeInput($input) {

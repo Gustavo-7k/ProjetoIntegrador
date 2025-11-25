@@ -43,19 +43,17 @@ $artista = [
 
 // Processar ação de seguir/deixar de seguir
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['toggle_follow'])) {
-    if (verificarCSRF($_POST['csrf_token'])) {
-        // Implementar lógica de seguir/deixar de seguir
-        $artista['seguindo'] = !$artista['seguindo'];
-        
-        // Retornar resposta JSON para AJAX
-        if (isset($_POST['ajax'])) {
-            header('Content-Type: application/json');
-            echo json_encode([
-                'success' => true,
-                'seguindo' => $artista['seguindo']
-            ]);
-            exit;
-        }
+    // CSRF removed - simply toggle follow status (placeholder logic)
+    $artista['seguindo'] = !$artista['seguindo'];
+    
+    // Retornar resposta JSON para AJAX
+    if (isset($_POST['ajax'])) {
+        header('Content-Type: application/json');
+        echo json_encode([
+            'success' => true,
+            'seguindo' => $artista['seguindo']
+        ]);
+        exit;
     }
 }
 
@@ -71,7 +69,7 @@ $pageTitle = $artista['nome'] . ' - Anthems';
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="../css/estilos.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Medula+One&display=swap" rel="stylesheet">
-    <?= gerarCSRFMeta() ?>
+    <!-- CSRF meta removed -->
 </head>
 <body>
     <?php include __DIR__ . '/../includes/header.php'; ?>
@@ -146,12 +144,10 @@ $pageTitle = $artista['nome'] . ' - Anthems';
             fetch('perfilartista.php?id=<?= urlencode($artista['id']) ?>', {
                 method: 'POST',
                 headers: {
-                    'Content-Type': 'application/x-www-form-urlencoded',
-                    'X-CSRF-Token': document.querySelector('meta[name="csrf-token"]').content
-                },
+                        'Content-Type': 'application/x-www-form-urlencoded'
+                    },
                 body: new URLSearchParams({
                     toggle_follow: '1',
-                    csrf_token: document.querySelector('meta[name="csrf-token"]').content,
                     ajax: '1'
                 })
             })

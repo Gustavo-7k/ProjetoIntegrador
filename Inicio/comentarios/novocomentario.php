@@ -8,11 +8,11 @@ $base_path = "../";
 
 // Dados dos álbuns disponíveis (em um sistema real, viria do banco de dados)
 $available_albums = [
-    ['title' => 'In Rainbows', 'artist' => 'Radiohead', 'url' => 'EscreverComentário.php'],
-    ['title' => 'Kid A', 'artist' => 'Radiohead', 'url' => 'KidA.php'],
-    ['title' => 'Ok Computer', 'artist' => 'Radiohead', 'url' => 'OkComputer.php'],
-    ['title' => 'Bury Me At Makeout Creek', 'artist' => 'Mitski', 'url' => 'Mitski.php'],
-    ['title' => 'Blonde', 'artist' => 'Frank Ocean', 'url' => 'FrankOcean.php']
+    ['id' => 1, 'title' => 'In Rainbows', 'artist' => 'Radiohead'],
+    ['id' => 2, 'title' => 'Kid A', 'artist' => 'Radiohead'],
+    ['id' => 3, 'title' => 'OK Computer', 'artist' => 'Radiohead'],
+    ['id' => 4, 'title' => 'Bury Me At Makeout Creek', 'artist' => 'Mitski'],
+    ['id' => 5, 'title' => 'Blonde', 'artist' => 'Frank Ocean']
 ];
 
 // Incluir header
@@ -43,7 +43,7 @@ include '../includes/header.php';
                 <datalist id="albuns">
                     <?php foreach ($available_albums as $album): ?>
                         <option value="<?php echo htmlspecialchars($album['title']); ?>" 
-                                data-url="<?php echo htmlspecialchars($album['url']); ?>" 
+                                data-id="<?php echo htmlspecialchars($album['id']); ?>" 
                                 data-artist="<?php echo htmlspecialchars($album['artist']); ?>">
                             <?php echo htmlspecialchars($album['artist']); ?>
                         </option>
@@ -57,8 +57,9 @@ include '../includes/header.php';
                 <div class="row g-3">
                     <?php foreach (array_slice($available_albums, 0, 3) as $album): ?>
                         <div class="col-4">
-                            <div class="card album-suggestion" 
-                                 data-album="<?php echo htmlspecialchars($album['title']); ?>"
+                               <div class="card album-suggestion" 
+                                   data-album="<?php echo htmlspecialchars($album['title']); ?>"
+                                   data-id="<?php echo htmlspecialchars($album['id']); ?>"
                                  style="cursor: pointer; border: 2px solid transparent; transition: all 0.3s ease;">
                                 <div class="card-body text-center p-2">
                                     <h6 class="card-title small mb-1"><?php echo htmlspecialchars($album['title']); ?></h6>
@@ -79,14 +80,15 @@ include '../includes/header.php';
 // JavaScript específico para esta página
 $inline_js = "
 // Configuração dos álbuns para JavaScript
-const albumLinks = " . json_encode(array_column($available_albums, 'url', 'title')) . ";
+const albumLinks = " . json_encode(array_column($available_albums, 'id', 'title')) . ";
 
 // Manipulador do campo de busca
 document.getElementById('buscaAlbum').addEventListener('change', function () {
     const valor = this.value.trim();
     
     if (albumLinks[valor]) {
-        window.location.href = albumLinks[valor];
+        const aid = albumLinks[valor];
+        window.location.href = '/albuns/album.php?id=' + aid;
     } else if (valor) {
         const confirmMsg = 'Álbum \"' + valor + '\" não encontrado. Deseja sugerir este álbum?';
         if (confirm(confirmMsg)) {
@@ -100,6 +102,9 @@ document.getElementById('buscaAlbum').addEventListener('change', function () {
 document.querySelectorAll('.album-suggestion').forEach(card => {
     card.addEventListener('click', function() {
         const albumTitle = this.dataset.album;
+        const id = this.dataset.id;
+        // redireciona para a página do álbum
+        if (id) return window.location.href = '/albuns/album.php?id=' + id;
         document.getElementById('buscaAlbum').value = albumTitle;
         document.getElementById('buscaAlbum').dispatchEvent(new Event('change'));
     });

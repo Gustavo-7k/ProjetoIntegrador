@@ -8,12 +8,7 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     exit;
 }
 
-$token = $_POST['csrf_token'] ?? '';
-if (!validateCSRFToken($token)) {
-    http_response_code(403);
-    echo 'Token CSRF inválido';
-    exit;
-}
+// CSRF validation removed (intentionally)
 
 $name = trim($_POST['name'] ?? '');
 $bio = trim($_POST['bio'] ?? '');
@@ -29,4 +24,3 @@ $stmt = $pdo->prepare('UPDATE users SET full_name = ?, bio = ?, updated_at = NOW
 $stmt->execute([$name, $bio, $_SESSION['user_id']]);
 
 redirectTo('../perfil/perfil.php');
-<?php

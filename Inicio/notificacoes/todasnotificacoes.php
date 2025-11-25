@@ -74,7 +74,7 @@ $pageTitle = 'Notificações - Anthems';
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="../css/estilos.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Medula+One&display=swap" rel="stylesheet">
-    <?= gerarCSRFMeta() ?>
+    <!-- CSRF meta removed -->
 </head>
 <body>
     <?php include __DIR__ . '/../includes/header.php'; ?>
@@ -118,8 +118,7 @@ $pageTitle = 'Notificações - Anthems';
             fetch('../api/aceitar-conexao.php', {
                 method: 'POST',
                 headers: {
-                    'Content-Type': 'application/json',
-                    'X-CSRF-Token': document.querySelector('meta[name="csrf-token"]').content
+                    'Content-Type': 'application/json'
                 },
                 body: JSON.stringify({ notificacao_id: notificacaoId })
             })
@@ -145,8 +144,7 @@ $pageTitle = 'Notificações - Anthems';
             fetch('../api/recusar-conexao.php', {
                 method: 'POST',
                 headers: {
-                    'Content-Type': 'application/json',
-                    'X-CSRF-Token': document.querySelector('meta[name="csrf-token"]').content
+                    'Content-Type': 'application/json'
                 },
                 body: JSON.stringify({ notificacao_id: notificacaoId })
             })
