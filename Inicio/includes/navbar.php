@@ -50,15 +50,16 @@ $is_admin = isset($is_admin) && $is_admin;
                 
                 <!-- Notifications Dropdown -->
                 <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                    <a class="nav-link dropdown-toggle position-relative" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false" id="notificationDropdown">
                         <img src="/img/notificacaoicon.png" alt="Notificações" class="nav-icon nav-notification-icon">
+                        <span class="notification-badge" id="notificationBadge" style="display: none;">0</span>
                     </a>
                     <div class="dropdown-menu dropdown-menu-end notification-dropdown">
                         <div class="notification-header">
                             <h6 class="mb-0">Notificações</h6>
                         </div>
-                        <div class="notification-content">
-                            <p class="text-muted mb-0">Você não tem notificações</p>
+                        <div class="notification-content" id="notificationContent">
+                            <p class="text-muted mb-0 p-3">Carregando...</p>
                         </div>
                         <div class="notification-footer">
                             <a href="/notificacoes/todasnotificacoes.php" class="text-primary">Ver todas</a>

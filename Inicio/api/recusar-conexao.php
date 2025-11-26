@@ -3,62 +3,53 @@ require_once __DIR__ . '/../config.php';
 
 header('Content-Type: application/json');
 
-// Verificar se o usuário está logado
-if (!isset($_SESSION['user_id'])) {
-    http_response_code(401);
-    echo json_encode(['success' => false, 'message' => 'Usuário não autenticado']);
-    exit;
+if (!isLoggedIn()) {
+    sendJSONResponse(['success' => false, 'message' => 'Não autenticado'], 401);
 }
 
-// Verificar método HTTP
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-    http_response_code(405);
-    echo json_encode(['success' => false, 'message' => 'Método não permitido']);
-    exit;
+    sendJSONResponse(['success' => false, 'message' => 'Método não permitido'], 405);
 }
 
-// Obter dados JSON
-$input = json_decode(file_get_contents('php://input'), true);
+$data = json_decode(file_get_contents('php://input'), true);
+$connectionId = (int)($data['connection_id'] ?? 0);
 
-// Verificar CSRF token
-if (!isset($input['notificacao_id']) || !verificarCSRF($_SERVER['HTTP_X_CSRF_TOKEN'])) {
-    http_response_code(403);
-    echo json_encode(['success' => false, 'message' => 'Token CSRF inválido']);
-    exit;
+if ($connectionId <= 0) {
+    sendJSONResponse(['success' => false, 'message' => 'ID de conexão inválido']);
 }
 
-$notificacao_id = (int)$input['notificacao_id'];
-$user_id = $_SESSION['user_id'];
+$currentUserId = $_SESSION['user_id'];
 
 try {
-    // Conectar ao banco de dados
-    $pdo = conectarBanco();
+    $pdo = getDBConnection();
     
-    // Verificar se a notificação existe e é uma solicitação de conexão
+    // Verificar se a conexão existe e é para o usuário atual
     $stmt = $pdo->prepare("
-        SELECT * FROM notificacoes 
-        WHERE id = ? AND receptor_id = ? AND tipo = 'solicitacao_conexao' AND status = 'pendente'
+        SELECT * FROM connections 
+        WHERE id = ? AND following_id = ? AND status = 'pending'
     ");
-    $stmt->execute([$notificacao_id, $user_id]);
-    $notificacao = $stmt->fetch();
+    $stmt->execute([$connectionId, $currentUserId]);
+    $connection = $stmt->fetch(PDO::FETCH_ASSOC);
     
-    if (!$notificacao) {
-        echo json_encode(['success' => false, 'message' => 'Notificação não encontrada']);
-        exit;
+    if (!$connection) {
+        sendJSONResponse(['success' => false, 'message' => 'Solicitação não encontrada']);
     }
     
-    // Atualizar status da notificação para recusada
+    // Deletar a solicitação
+    $stmt = $pdo->prepare("DELETE FROM connections WHERE id = ?");
+    $stmt->execute([$connectionId]);
+    
+    // Marcar notificação como lida
     $stmt = $pdo->prepare("
-        UPDATE notificacoes 
-        SET status = 'recusada', data_processamento = NOW() 
-        WHERE id = ?
+        UPDATE notifications 
+        SET is_read = TRUE 
+        WHERE user_id = ? AND type = 'follow' AND related_id = ?
     ");
-    $stmt->execute([$notificacao_id]);
+    $stmt->execute([$currentUserId, $connection['follower_id']]);
     
-    echo json_encode(['success' => true, 'message' => 'Solicitação recusada']);
+    sendJSONResponse(['success' => true, 'message' => 'Solicitação recusada']);
     
-} catch (Exception $e) {
+} catch (PDOException $e) {
     error_log("Erro ao recusar conexão: " . $e->getMessage());
-    echo json_encode(['success' => false, 'message' => 'Erro interno do servidor']);
+    sendJSONResponse(['success' => false, 'message' => 'Erro interno'], 500);
 }
-?>

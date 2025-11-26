@@ -1,23 +1,38 @@
 <?php
 require_once __DIR__ . '/../config.php';
-// Rota antiga - redireciona para a página central de álbum (In Rainbows -> id=1)
-redirectTo(APP_URL . 'albuns/album.php?id=1');
-exit;
 
-// Conteúdo antigo mantido como referência (removido)
-?>
-$php_redirect = true;
-require_once __DIR__ . '/../config.php';
-// Redirecionar para a página de álbum centralizada
-redirectTo(APP_URL . 'albuns/album.php?id=1');
-// Se o redirecionamento falhar, continuar para a versão antiga do formulário
-if ($php_redirect) {
+// Verificar se usuário está logado
+if (!isset($_SESSION['user_id'])) {
+    redirectTo(APP_URL . 'login/login.php');
     exit;
 }
 
-<?php
+// Obter ID do álbum
+$album_id = isset($_GET['id']) ? (int)$_GET['id'] : 0;
+
+if ($album_id <= 0) {
+    redirectTo(APP_URL . 'inicio.php');
+    exit;
+}
+
+// Buscar dados do álbum
+try {
+    $pdo = getConnection();
+    $stmt = $pdo->prepare("SELECT * FROM albums WHERE id = ?");
+    $stmt->execute([$album_id]);
+    $album_data = $stmt->fetch(PDO::FETCH_ASSOC);
+    
+    if (!$album_data) {
+        redirectTo(APP_URL . 'inicio.php');
+        exit;
+    }
+} catch (PDOException $e) {
+    redirectTo(APP_URL . 'inicio.php');
+    exit;
+}
+
 // Configurações da página
-$page_title = "NTHMS - Anthems | Escrever Comentário - In Rainbows";
+$page_title = "NTHMS - Anthems | Escrever Comentário - " . htmlspecialchars($album_data['title']);
 $active_page = "novo_comentario";
 $base_path = "../";
 
@@ -31,14 +46,6 @@ $additional_js = [
     'https://code.jquery.com/jquery-3.6.0.min.js'
 ];
 
-// Dados do álbum (em um sistema real, viria do banco de dados baseado no ID)
-$album_data = [
-    'title' => 'IN RAINBOWS',
-    'artist' => 'RADIOHEAD',
-    'cover_image' => 'InRainbows.jpeg',
-    'id' => 1
-];
-
 // CSS específico para esta página
 $inline_css = '
 .content-box {
@@ -49,10 +56,10 @@ $inline_css = '
     box-shadow: 0 5px 20px rgba(0,0,0,0.1);
 }
 
-.album-cover {
-    width: 100%;
-    max-width: 300px;
-    height: auto;
+.comment-album-cover {
+    width: 280px;
+    height: 280px;
+    object-fit: cover;
     border-radius: 15px;
     box-shadow: 0 8px 25px rgba(0,0,0,0.3);
 }
@@ -162,8 +169,9 @@ $inline_css = '
         text-align: center;
     }
     
-    .album-cover {
-        max-width: 250px;
+    .comment-album-cover {
+        width: 220px;
+        height: 220px;
         margin: 0 auto;
         display: block;
     }
@@ -185,6 +193,7 @@ include '../includes/header.php';
 <?php include '../includes/navbar.php'; ?>
 
 <!-- Conteúdo Principal -->
+<main class="album-page">
 <div class="container">
     <div class="content-box">
         <div class="row">
@@ -192,7 +201,7 @@ include '../includes/header.php';
             <div class="col-md-5 mb-4 mb-md-0 text-center">
                 <img src="../img/<?php echo htmlspecialchars($album_data['cover_image']); ?>" 
                      alt="Capa do <?php echo htmlspecialchars($album_data['title']); ?>" 
-                     class="album-cover">
+                     class="comment-album-cover">
             </div>
             
             <!-- Área de formulário (direita) -->
@@ -237,6 +246,7 @@ include '../includes/header.php';
         </div>
     </div>
 </div>
+</main>
 
 <?php include '../includes/chat-sidebar.php'; ?>
 
