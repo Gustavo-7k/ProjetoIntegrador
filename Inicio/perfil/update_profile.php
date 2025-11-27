@@ -2,13 +2,13 @@
 require_once __DIR__ . '/../config.php';
 requireAuth();
 
+header('Content-Type: text/plain; charset=utf-8');
+
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     http_response_code(405);
     echo 'Método não permitido';
     exit;
 }
-
-// CSRF validation removed (intentionally)
 
 $name = trim($_POST['name'] ?? '');
 $bio = trim($_POST['bio'] ?? '');
@@ -19,8 +19,16 @@ if ($name === '') {
     exit;
 }
 
-$pdo = getDBConnection();
-$stmt = $pdo->prepare('UPDATE users SET full_name = ?, bio = ?, updated_at = NOW() WHERE id = ?');
-$stmt->execute([$name, $bio, $_SESSION['user_id']]);
-
-redirectTo('../perfil/perfil.php');
+try {
+    $pdo = getDBConnection();
+    $stmt = $pdo->prepare('UPDATE users SET full_name = ?, bio = ?, updated_at = NOW() WHERE id = ?');
+    $stmt->execute([$name, $bio, $_SESSION['user_id']]);
+    
+    // Retornar sucesso
+    http_response_code(200);
+    echo 'OK';
+} catch (PDOException $e) {
+    error_log("Erro ao atualizar perfil: " . $e->getMessage());
+    http_response_code(500);
+    echo 'Erro ao salvar perfil';
+}

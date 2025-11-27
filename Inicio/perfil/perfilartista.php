@@ -48,11 +48,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['toggle_follow'])) {
     
     // Retornar resposta JSON para AJAX
     if (isset($_POST['ajax'])) {
-        header('Content-Type: application/json');
+        header('Content-Type: application/json; charset=utf-8');
         echo json_encode([
             'success' => true,
             'seguindo' => $artista['seguindo']
-        ]);
+        ], JSON_UNESCAPED_UNICODE);
         exit;
     }
 }

@@ -65,3 +65,9 @@ AH00558: apache2: Could not reliably determine the server's fully qualified doma
 [Wed Nov 26 02:41:54.857314 2025] [mpm_prefork:notice] [pid 1:tid 1] AH00170: caught SIGWINCH, shutting down gracefully
 [Wed Nov 26 02:47:49.088379 2025] [mpm_prefork:notice] [pid 1:tid 1] AH00163: Apache/2.4.65 (Debian) OpenSSL/3.5.1 configured -- resuming normal operations
 [Wed Nov 26 02:47:49.090020 2025] [core:notice] [pid 1:tid 1] AH00094: Command line: 'apache2 -D FOREGROUND'
+[Wed Nov 26 02:56:34.716459 2025] [mpm_prefork:notice] [pid 1:tid 1] AH00170: caught SIGWINCH, shutting down gracefully
+[Wed Nov 26 21:58:46.631984 2025] [mpm_prefork:notice] [pid 1:tid 1] AH00163: Apache/2.4.65 (Debian) OpenSSL/3.5.1 configured -- resuming normal operations
+[Wed Nov 26 21:58:46.632475 2025] [core:notice] [pid 1:tid 1] AH00094: Command line: 'apache2 -D FOREGROUND'
+[Thu Nov 27 02:50:14.752690 2025] [mpm_prefork:notice] [pid 1:tid 1] AH00170: caught SIGWINCH, shutting down gracefully
+[Thu Nov 27 02:50:16.794687 2025] [mpm_prefork:notice] [pid 1:tid 1] AH00163: Apache/2.4.65 (Debian) OpenSSL/3.5.1 configured -- resuming normal operations
+[Thu Nov 27 02:50:16.795020 2025] [core:notice] [pid 1:tid 1] AH00094: Command line: 'apache2 -D FOREGROUND'

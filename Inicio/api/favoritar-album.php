@@ -1,19 +1,19 @@
 <?php
 require_once __DIR__ . '/../config.php';
 
-header('Content-Type: application/json');
+header('Content-Type: application/json; charset=utf-8');
 
 // Verificar se o usuário está logado
 if (!isset($_SESSION['user_id'])) {
     http_response_code(401);
-    echo json_encode(['success' => false, 'message' => 'Usuário não autenticado']);
+    echo json_encode(['success' => false, 'message' => 'Usuário não autenticado'], JSON_UNESCAPED_UNICODE);
     exit;
 }
 
 // Verificar método HTTP
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     http_response_code(405);
-    echo json_encode(['success' => false, 'message' => 'Método não permitido']);
+    echo json_encode(['success' => false, 'message' => 'Método não permitido'], JSON_UNESCAPED_UNICODE);
     exit;
 }
 
@@ -23,7 +23,7 @@ $input = json_decode(file_get_contents('php://input'), true);
 // Verificar CSRF token
 if (!isset($input['album_id']) || !verificarCSRF($_SERVER['HTTP_X_CSRF_TOKEN'])) {
     http_response_code(403);
-    echo json_encode(['success' => false, 'message' => 'Token CSRF inválido']);
+    echo json_encode(['success' => false, 'message' => 'Token CSRF inválido'], JSON_UNESCAPED_UNICODE);
     exit;
 }
 
@@ -39,7 +39,7 @@ try {
     $stmt->execute([$album_id]);
     
     if (!$stmt->fetch()) {
-        echo json_encode(['success' => false, 'message' => 'Álbum não encontrado']);
+        echo json_encode(['success' => false, 'message' => 'Álbum não encontrado'], JSON_UNESCAPED_UNICODE);
         exit;
     }
     
@@ -77,10 +77,10 @@ try {
         'success' => true, 
         'favorited' => $favorited,
         'message' => $message
-    ]);
+    ], JSON_UNESCAPED_UNICODE);
     
 } catch (Exception $e) {
     error_log("Erro ao favoritar álbum: " . $e->getMessage());
-    echo json_encode(['success' => false, 'message' => 'Erro interno do servidor']);
+    echo json_encode(['success' => false, 'message' => 'Erro interno do servidor'], JSON_UNESCAPED_UNICODE);
 }
 ?>

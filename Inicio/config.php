@@ -25,6 +25,10 @@ ini_set('session.cookie_httponly', 1);
 ini_set('session.use_strict_mode', 1);
 session_start();
 
+// Configuração de encoding padrão
+ini_set('default_charset', 'UTF-8');
+mb_internal_encoding('UTF-8');
+
 // Configurações de timezone
 date_default_timezone_set('America/Sao_Paulo');
 

@@ -66,26 +66,26 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['admin_action'])) {
         $comentario_id = $_POST['comentario_id'] ?? null;
         
         if (isset($_POST['ajax'])) {
-            header('Content-Type: application/json');
+            header('Content-Type: application/json; charset=utf-8');
             
             switch ($acao) {
                 case 'timeout':
                     // Implementar lógica de timeout
-                    echo json_encode(['success' => true, 'message' => 'Usuário recebeu timeout de 24h']);
+                    echo json_encode(['success' => true, 'message' => 'Usuário recebeu timeout de 24h'], JSON_UNESCAPED_UNICODE);
                     break;
                     
                 case 'ban':
                     // Implementar lógica de banimento
-                    echo json_encode(['success' => true, 'message' => 'Usuário banido permanentemente']);
+                    echo json_encode(['success' => true, 'message' => 'Usuário banido permanentemente'], JSON_UNESCAPED_UNICODE);
                     break;
                     
                 case 'delete_comment':
                     // Implementar lógica de deletar comentário
-                    echo json_encode(['success' => true, 'message' => 'Comentário removido']);
+                    echo json_encode(['success' => true, 'message' => 'Comentário removido'], JSON_UNESCAPED_UNICODE);
                     break;
                     
                 default:
-                    echo json_encode(['success' => false, 'message' => 'Ação inválida']);
+                    echo json_encode(['success' => false, 'message' => 'Ação inválida'], JSON_UNESCAPED_UNICODE);
             }
             exit;
         }

@@ -314,8 +314,11 @@ include '../includes/header.php';
                             </div>
                             
                             <div class="reviewer-info">
-                                <?php if (!empty($comentario['profile_image'])): ?>
-                                    <img src="/uploads/<?= htmlspecialchars($comentario['profile_image']) ?>" alt="" class="reviewer-avatar-img">
+                                <?php 
+                                $hasValidImage = !empty($comentario['profile_image']) && file_exists(__DIR__ . '/../uploads/' . $comentario['profile_image']);
+                                if ($hasValidImage): 
+                                ?>
+                                    <img src="../uploads/<?= htmlspecialchars($comentario['profile_image']) ?>" alt="" class="reviewer-avatar-img">
                                 <?php else: ?>
                                     <div class="reviewer-avatar"><?= htmlspecialchars($comentario['autor_avatar']) ?></div>
                                 <?php endif; ?>

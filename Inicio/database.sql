@@ -132,6 +132,19 @@ CREATE TABLE IF NOT EXISTS `comment_likes` (
     UNIQUE KEY `unique_like` (`user_id`, `comment_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
+-- Tabela de álbuns favoritos do usuário (exibidos no perfil)
+CREATE TABLE IF NOT EXISTS `user_favorite_albums` (
+    `id` INT AUTO_INCREMENT PRIMARY KEY,
+    `user_id` INT NOT NULL,
+    `album_id` INT NOT NULL,
+    `position` TINYINT NOT NULL DEFAULT 0,
+    `created_at` DATETIME DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (`user_id`) REFERENCES `users`(`id`) ON DELETE CASCADE,
+    FOREIGN KEY (`album_id`) REFERENCES `albums`(`id`) ON DELETE CASCADE,
+    UNIQUE KEY `unique_user_album` (`user_id`, `album_id`),
+    INDEX idx_user_position (`user_id`, `position`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
 -- =============================================
 -- INSERÇÃO DE DADOS DE EXEMPLO
 -- =============================================

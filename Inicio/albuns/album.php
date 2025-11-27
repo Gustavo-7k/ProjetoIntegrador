@@ -91,7 +91,6 @@ async function fetchAlbum(){
                 <h1 class="album-title">${escapeHtml(a.title)}</h1>
                 <p class="album-artist">${escapeHtml(a.artist)}</p>
                 <p class="album-genre">${escapeHtml(a.genre || '')}</p>
-                <p class="album-desc">Descrição do album</p>
                 <div class="album-media">
                     <span class="media-label">media</span>
                     <span class="media-value">${a.average_rating || '0.0'}</span>

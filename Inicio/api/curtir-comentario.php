@@ -1,19 +1,19 @@
 <?php
 require_once __DIR__ . '/../config.php';
 
-header('Content-Type: application/json');
+header('Content-Type: application/json; charset=utf-8');
 
 // Verificar se o usuário está logado
 if (!isset($_SESSION['user_id'])) {
     http_response_code(401);
-    echo json_encode(['success' => false, 'message' => 'Usuário não autenticado']);
+    echo json_encode(['success' => false, 'message' => 'Usuário não autenticado'], JSON_UNESCAPED_UNICODE);
     exit;
 }
 
 // Verificar método HTTP
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     http_response_code(405);
-    echo json_encode(['success' => false, 'message' => 'Método não permitido']);
+    echo json_encode(['success' => false, 'message' => 'Método não permitido'], JSON_UNESCAPED_UNICODE);
     exit;
 }
 
@@ -37,7 +37,7 @@ try {
     $stmt->execute([$comentario_id]);
     
     if (!$stmt->fetch()) {
-        echo json_encode(['success' => false, 'message' => 'Comentário não encontrado']);
+        echo json_encode(['success' => false, 'message' => 'Comentário não encontrado'], JSON_UNESCAPED_UNICODE);
         exit;
     }
     
@@ -65,6 +65,6 @@ try {
     
 } catch (Exception $e) {
     error_log("Erro ao curtir comentário: " . $e->getMessage());
-    echo json_encode(['success' => false, 'message' => 'Erro interno do servidor']);
+    echo json_encode(['success' => false, 'message' => 'Erro interno do servidor'], JSON_UNESCAPED_UNICODE);
 }
 ?>

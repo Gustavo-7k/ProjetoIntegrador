@@ -1,7 +1,7 @@
 <?php
 require_once __DIR__ . '/../config.php';
 
-header('Content-Type: application/json');
+header('Content-Type: application/json; charset=utf-8');
 
 if (!isLoggedIn()) {
     sendJSONResponse(['success' => false, 'message' => 'Não autenticado'], 401);
@@ -36,6 +36,19 @@ try {
     $searchTerm = '%' . $query . '%';
     $stmt->execute([$currentUserId, $currentUserId, $currentUserId, $searchTerm, $searchTerm]);
     $users = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    
+    // Processar imagens de perfil
+    foreach ($users as &$user) {
+        if (!empty($user['profile_image'])) {
+            $imagePath = __DIR__ . '/../uploads/' . $user['profile_image'];
+            if (file_exists($imagePath)) {
+                $user['profile_image'] = '/uploads/' . $user['profile_image'];
+            } else {
+                $user['profile_image'] = null;
+            }
+        }
+    }
+    unset($user);
     
     sendJSONResponse([
         'success' => true,

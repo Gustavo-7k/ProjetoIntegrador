@@ -18,6 +18,19 @@ try {
     $stmt->execute([$album_id]);
     $rows = $stmt->fetchAll();
 
+    // Processar imagens de perfil
+    foreach ($rows as &$row) {
+        if (!empty($row['profile_image'])) {
+            $imagePath = __DIR__ . '/../uploads/' . $row['profile_image'];
+            if (file_exists($imagePath)) {
+                $row['profile_image'] = '/uploads/' . $row['profile_image'];
+            } else {
+                $row['profile_image'] = null;
+            }
+        }
+    }
+    unset($row);
+
     // Build nested tree
     $byId = [];
     foreach ($rows as $r) {

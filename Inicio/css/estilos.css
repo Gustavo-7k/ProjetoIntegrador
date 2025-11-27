@@ -126,6 +126,100 @@
     justify-content: center;
 }
 
+/* ========================================
+   MODAL ADICIONAR ÁLBUM
+   ======================================== */
+.add-album-modal .modal-header {
+    background: var(--primary-color);
+    color: white;
+    border-bottom: none;
+}
+
+.add-album-modal .modal-title {
+    font-weight: 600;
+}
+
+.add-album-modal .btn-close {
+    filter: brightness(0) invert(1);
+}
+
+.add-album-modal .modal-body {
+    padding: 25px;
+    max-height: 60vh;
+    overflow-y: auto;
+}
+
+.add-album-modal .form-label {
+    color: var(--primary-color);
+    font-weight: 500;
+    margin-bottom: 5px;
+}
+
+.add-album-modal .form-control {
+    border-radius: 8px;
+    border: 1px solid var(--border-gray);
+    padding: 10px 15px;
+}
+
+.add-album-modal .form-control:focus {
+    border-color: var(--primary-light);
+    box-shadow: 0 0 0 3px rgba(194, 159, 239, 0.25);
+}
+
+.add-album-modal .modal-footer {
+    border-top: 1px solid var(--border-gray);
+    padding: 15px 25px;
+}
+
+.btn-add-album {
+    background: var(--primary-color);
+    border-color: var(--primary-color);
+    padding: 10px 25px;
+    font-weight: 500;
+}
+
+.btn-add-album:hover {
+    background: var(--primary-light);
+    border-color: var(--primary-light);
+    color: var(--primary-color);
+}
+
+.btn-add-album .btn-loading {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.album-cover-preview {
+    display: none;
+    width: 150px;
+    height: 150px;
+    border-radius: 8px;
+    overflow: hidden;
+    border: 2px solid var(--border-gray);
+}
+
+.album-cover-preview img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+/* Scrollbar do modal */
+.add-album-modal .modal-body::-webkit-scrollbar {
+    width: 6px;
+}
+
+.add-album-modal .modal-body::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 3px;
+}
+
+.add-album-modal .modal-body::-webkit-scrollbar-thumb {
+    background: var(--primary-light);
+    border-radius: 3px;
+}
+
 /* Chat styles removed */
 
 /* ========================================
@@ -232,13 +326,14 @@
     gap: 10px;
     position: absolute;
     top: 100%;
-    right: 0;
+    left: 0;
     margin-top: 10px;
     background: white;
     padding: 15px;
     border-radius: 12px;
     box-shadow: 0 4px 20px rgba(0,0,0,0.15);
     z-index: 100;
+    white-space: nowrap;
 }
 
 .connection-input {
@@ -336,6 +431,108 @@
     margin-bottom: 15px;
 }
 
+/* ========================================
+   ÁLBUNS FAVORITOS NO PERFIL
+   (Mesmo estilo da página novo comentário)
+   ======================================== */
+.favorite-albums-display {
+    margin-bottom: 40px;
+    width: 100%;
+}
+
+.favorite-albums-display h3 {
+    color: var(--primary-color);
+    margin-bottom: 20px;
+    font-size: 1.2rem;
+}
+
+.favorite-albums-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+}
+
+.favorite-album-card {
+    background: white;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    cursor: pointer;
+    transition: transform 0.3s, box-shadow 0.3s;
+    text-decoration: none;
+    color: inherit;
+    display: block;
+}
+
+.favorite-album-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+}
+
+.favorite-album-cover {
+    width: 100%;
+    aspect-ratio: 1 / 1;
+    background-size: cover;
+    background-position: center;
+    background-color: var(--primary-light);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.favorite-album-cover svg {
+    opacity: 0.5;
+}
+
+.favorite-album-info {
+    padding: 12px 15px;
+}
+
+.favorite-album-title {
+    font-weight: 600;
+    color: var(--primary-color);
+    font-size: 0.95rem;
+    margin-bottom: 4px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.favorite-album-artist {
+    color: #666;
+    font-size: 0.85rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+@media (max-width: 768px) {
+    .favorite-albums-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 15px;
+    }
+}
+
+@media (max-width: 480px) {
+    .favorite-albums-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 10px;
+    }
+    
+    .favorite-album-info {
+        padding: 10px;
+    }
+    
+    .favorite-album-title {
+        font-size: 0.85rem;
+    }
+    
+    .favorite-album-artist {
+        font-size: 0.75rem;
+    }
+}
+
+/* Legado - manter para outras partes */
 .albums-section {
     margin-bottom: 40px;
     width: 100%;
@@ -345,73 +542,6 @@
 .albums-section h3 {
     color: var(--primary-color);
     margin-bottom: 25px;
-}
-
-/* Carrossel de álbuns e artistas */
-.albums-section .carousel {
-    position: relative;
-    padding: 0 40px;
-}
-
-.carousel-grid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 15px;
-    padding: 10px 0;
-}
-
-.albums-section .carousel-control-prev,
-.albums-section .carousel-control-next {
-    width: 35px;
-    height: 35px;
-    background-color: var(--primary-color);
-    border-radius: 50%;
-    top: 50%;
-    transform: translateY(-50%);
-    opacity: 1;
-}
-
-.albums-section .carousel-control-prev {
-    left: 0;
-}
-
-.albums-section .carousel-control-next {
-    right: 0;
-}
-
-.albums-section .carousel-control-prev:hover,
-.albums-section .carousel-control-next:hover {
-    background-color: var(--primary-light);
-}
-
-.albums-section .carousel-control-prev-icon,
-.albums-section .carousel-control-next-icon {
-    width: 15px;
-    height: 15px;
-}
-
-/* Grid original para fallback */
-.albums-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
-    gap: 15px;
-    width: 100%;
-}
-
-@media (max-width: 768px) {
-    .carousel-grid {
-        grid-template-columns: repeat(2, 1fr);
-    }
-}
-
-@media (max-width: 480px) {
-    .carousel-grid {
-        grid-template-columns: repeat(1, 1fr);
-    }
-    
-    .albums-section .carousel {
-        padding: 0 30px;
-    }
 }
 
 .album-card {
@@ -460,14 +590,38 @@
     z-index: 1000;
     justify-content: center;
     align-items: center;
+    padding: 20px;
+    overflow-y: auto;
 }
 
 .edit-modal-content {
     background: #fff;
-    padding: 20px;
-    border-radius: 10px;
+    padding: 25px;
+    border-radius: 12px;
     width: 90%;
     max-width: 500px;
+    max-height: 90vh;
+    overflow-y: auto;
+    margin: auto;
+}
+
+/* Scrollbar personalizada para o modal */
+.edit-modal-content::-webkit-scrollbar {
+    width: 8px;
+}
+
+.edit-modal-content::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 4px;
+}
+
+.edit-modal-content::-webkit-scrollbar-thumb {
+    background: var(--primary-light);
+    border-radius: 4px;
+}
+
+.edit-modal-content::-webkit-scrollbar-thumb:hover {
+    background: var(--primary-color);
 }
 
 .edit-modal h3 {
@@ -1504,5 +1658,180 @@
     
     .replies-list {
         margin-left: 15px;
+    }
+}
+
+/* ========================================
+   SELEÇÃO DE ÁLBUNS FAVORITOS NO PERFIL
+   ======================================== */
+.favorite-albums-section {
+    background: #f8f9fa;
+    border-radius: 10px;
+    padding: 15px;
+    margin-top: 10px;
+}
+
+.favorite-albums-section input {
+    margin-bottom: 10px;
+}
+
+.album-search-results {
+    max-height: 200px;
+    overflow-y: auto;
+    background: white;
+    border: 1px solid var(--border-gray);
+    border-radius: 8px;
+    display: none;
+    margin-bottom: 15px;
+}
+
+.album-search-results.show {
+    display: block;
+}
+
+.album-search-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 12px;
+    cursor: pointer;
+    transition: background 0.2s;
+    border-bottom: 1px solid #eee;
+}
+
+.album-search-item:last-child {
+    border-bottom: none;
+}
+
+.album-search-item:hover {
+    background: #f0f0f0;
+}
+
+.album-search-item.disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    background: #f5f5f5;
+}
+
+.album-search-item img {
+    width: 45px;
+    height: 45px;
+    border-radius: 6px;
+    object-fit: cover;
+}
+
+.album-search-info {
+    flex: 1;
+}
+
+.album-search-title {
+    font-weight: 600;
+    font-size: 14px;
+    color: #333;
+    display: block;
+}
+
+.album-search-artist {
+    font-size: 12px;
+    color: #666;
+}
+
+.album-search-added {
+    font-size: 11px;
+    color: var(--primary-color);
+    font-weight: 500;
+}
+
+.selected-albums-label {
+    font-size: 13px;
+    color: #666;
+    margin-bottom: 10px;
+}
+
+.selected-albums-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+}
+
+.selected-album-item {
+    position: relative;
+    background: white;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.selected-album-item img {
+    width: 100%;
+    aspect-ratio: 1;
+    object-fit: cover;
+}
+
+.selected-album-info {
+    padding: 8px;
+    background: white;
+}
+
+.selected-album-title {
+    font-size: 11px;
+    font-weight: 600;
+    color: #333;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.selected-album-artist {
+    font-size: 10px;
+    color: #666;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.selected-album-remove {
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    width: 22px;
+    height: 22px;
+    background: rgba(220, 53, 69, 0.9);
+    color: white;
+    border: none;
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    line-height: 1;
+    transition: background 0.2s;
+}
+
+.selected-album-remove:hover {
+    background: #dc3545;
+}
+
+.empty-albums-message {
+    text-align: center;
+    padding: 30px 20px;
+    background: #f8f9fa;
+    border-radius: 10px;
+    color: #666;
+}
+
+.empty-albums-message p {
+    margin: 5px 0;
+}
+
+.empty-albums-message p:first-child {
+    font-weight: 500;
+    color: #333;
+}
+
+@media (max-width: 500px) {
+    .selected-albums-grid {
+        grid-template-columns: repeat(2, 1fr);
     }
 }
