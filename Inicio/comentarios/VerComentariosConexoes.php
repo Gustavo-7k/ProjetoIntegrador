@@ -297,7 +297,7 @@ include '../includes/header.php';
             </div>
         <?php else: ?>
             <?php foreach ($comentarios as $comentario): ?>
-                <a href="Vercomentario.php?id=<?= $comentario['id'] ?>" class="review-link">
+                <a href="../albuns/album.php?id=<?= $comentario['album_id'] ?>#comment-<?= $comentario['id'] ?>" class="review-link">
                     <div class="review-card">
                         <?php if (!empty($comentario['album_capa'])): ?>
                             <div class="album-cover-container" style="background-image: url('/img/<?= htmlspecialchars($comentario['album_capa']) ?>');"></div>

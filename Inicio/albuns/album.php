@@ -118,6 +118,8 @@ async function fetchComments(){
 function renderComment(c){
     const div = document.createElement('div');
     div.className = 'comment-item';
+    div.id = 'comment-' + c.id;
+    div.setAttribute('data-comment-id', c.id);
     const defaultAvatar = 'data:image/svg+xml,' + encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="50" cy="50" r="50" fill="#c29fef"/><circle cx="50" cy="40" r="18" fill="#170045"/><ellipse cx="50" cy="85" rx="30" ry="25" fill="#170045"/></svg>');
     const avatarUrl = c.profile_image ? escapeHtml(c.profile_image) : defaultAvatar;
     const md = DOMPurify.sanitize(marked.parse(c.comment));
@@ -198,7 +200,32 @@ document.addEventListener('click', async (ev) => {
 });
 
 fetchAlbum();
-fetchComments();
+fetchComments().then(() => {
+    // Verificar se há um comentário específico na URL (hash)
+    const hash = window.location.hash;
+    if (hash && hash.startsWith('#comment-')) {
+        const commentId = hash.replace('#comment-', '');
+        setTimeout(() => {
+            highlightComment(commentId);
+        }, 500);
+    }
+});
+
+function highlightComment(commentId) {
+    const commentElement = document.getElementById('comment-' + commentId);
+    if (commentElement) {
+        // Scroll suave até o comentário
+        commentElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        
+        // Adicionar efeito de piscar
+        commentElement.classList.add('comment-highlight');
+        
+        // Remover a classe após a animação
+        setTimeout(() => {
+            commentElement.classList.remove('comment-highlight');
+        }, 3000);
+    }
+}
 </script>
 
 <?php include __DIR__ . '/../includes/footer.php'; ?>
