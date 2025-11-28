@@ -127,6 +127,181 @@
 }
 
 /* ========================================
+   PÁGINA DE TODAS AS NOTIFICAÇÕES
+   ======================================== */
+.notification-container {
+    max-width: 700px;
+    margin: 100px auto 40px;
+    padding: 0 20px;
+}
+
+.notification-container .notification-header {
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: var(--primary-color);
+    margin-bottom: 25px;
+    padding-bottom: 15px;
+    border-bottom: 2px solid var(--primary-light);
+}
+
+.notification-list {
+    background: white;
+    border-radius: 15px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+    overflow: hidden;
+}
+
+.notification-list .notification-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 15px;
+    padding: 20px;
+    border-bottom: 1px solid #eee;
+    transition: background-color 0.2s;
+}
+
+.notification-list .notification-item:last-child {
+    border-bottom: none;
+}
+
+.notification-list .notification-item:hover {
+    background-color: #f8f9fa;
+}
+
+.notification-list .notification-item.unread {
+    background-color: #f0f7ff;
+}
+
+.notification-list .notification-item.accepted {
+    background-color: #e8f5e9;
+}
+
+.notification-list .notification-avatar {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    object-fit: cover;
+    flex-shrink: 0;
+}
+
+.notification-list .notification-avatar-link {
+    flex-shrink: 0;
+}
+
+.notification-list .notification-avatar-link:hover .notification-avatar {
+    opacity: 0.8;
+    transform: scale(1.05);
+    transition: all 0.2s ease;
+}
+
+.notification-list .notification-user-link {
+    color: var(--primary-color);
+    text-decoration: none;
+    transition: color 0.2s;
+}
+
+.notification-list .notification-user-link:hover {
+    color: var(--primary-light);
+    text-decoration: underline;
+}
+
+.notification-list .notification-content {
+    flex: 1;
+    min-width: 0;
+}
+
+.notification-list .notification-title {
+    font-weight: 600;
+    color: var(--primary-color);
+    margin-bottom: 5px;
+    font-size: 0.95rem;
+}
+
+.notification-list .notification-message {
+    color: #555;
+    font-size: 0.9rem;
+    margin-bottom: 8px;
+    line-height: 1.4;
+}
+
+.notification-list .notification-time {
+    color: #999;
+    font-size: 0.8rem;
+}
+
+.notification-list .notification-actions {
+    display: flex;
+    gap: 10px;
+    flex-shrink: 0;
+    align-self: center;
+}
+
+.notification-list .btn-accept {
+    background: var(--primary-color);
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 20px;
+    font-size: 0.85rem;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.notification-list .btn-accept:hover {
+    background: #0f0035;
+}
+
+.notification-list .btn-decline {
+    background: transparent;
+    color: #666;
+    border: 1px solid #ddd;
+    padding: 8px 16px;
+    border-radius: 20px;
+    font-size: 0.85rem;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.notification-list .btn-decline:hover {
+    background: #f8f9fa;
+    border-color: #ccc;
+}
+
+.empty-notifications {
+    text-align: center;
+    padding: 60px 20px;
+    color: #999;
+}
+
+.empty-notifications svg {
+    color: var(--primary-light);
+    margin-bottom: 15px;
+}
+
+.empty-notifications p {
+    font-size: 1rem;
+    margin: 0;
+}
+
+@media (max-width: 600px) {
+    .notification-container {
+        margin-top: 80px;
+        padding: 0 15px;
+    }
+    
+    .notification-list .notification-item {
+        flex-wrap: wrap;
+        padding: 15px;
+    }
+    
+    .notification-list .notification-actions {
+        width: 100%;
+        margin-top: 10px;
+        justify-content: flex-end;
+    }
+}
+
+/* ========================================
    MODAL ADICIONAR ÁLBUM
    ======================================== */
 .add-album-modal .modal-header {
@@ -264,6 +439,91 @@
     color: var(--primary-color);
     font-weight: bold;
     margin-bottom: 10px;
+}
+
+.profile-header-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 15px;
+    margin-bottom: 10px;
+}
+
+.profile-header-row h1 {
+    margin-bottom: 0;
+}
+
+.profile-username {
+    color: var(--text-gray);
+    font-size: 0.95rem;
+    display: block;
+    margin-top: 5px;
+}
+
+/* Botão Seguir */
+.follow-btn {
+    background-color: var(--primary-color);
+    color: white;
+    border: 2px solid var(--primary-color);
+    padding: 8px 25px;
+    border-radius: 25px;
+    font-size: 0.95rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.follow-btn:hover {
+    background-color: transparent;
+    color: var(--primary-color);
+}
+
+.follow-btn.following {
+    background-color: transparent;
+    color: var(--primary-color);
+    border-color: var(--primary-color);
+}
+
+.follow-btn.following:hover {
+    background-color: #dc3545;
+    border-color: #dc3545;
+    color: white;
+}
+
+.follow-btn.pending {
+    background-color: #6c757d;
+    border-color: #6c757d;
+    color: white;
+    cursor: not-allowed;
+    opacity: 0.8;
+}
+
+/* Header dos álbuns com link "Ver todos" */
+.albums-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.albums-header h3 {
+    color: var(--primary-color);
+    margin: 0;
+    font-size: 1.2rem;
+}
+
+.view-all-link {
+    color: var(--primary-color);
+    text-decoration: none;
+    font-weight: 500;
+    font-size: 0.9rem;
+    transition: color 0.2s;
+}
+
+.view-all-link:hover {
+    color: var(--primary-light);
+    text-decoration: underline;
 }
 
 .edit-btn {
@@ -1570,6 +1830,59 @@
 .comment-content .comment-header strong {
     color: #000;
     font-size: 0.95rem;
+}
+
+/* Links para perfil nos comentários */
+.comment-avatar-link,
+.comment-username-link {
+    text-decoration: none;
+    transition: opacity 0.2s;
+}
+
+.comment-avatar-link:hover {
+    opacity: 0.8;
+}
+
+.comment-avatar-link:hover .comment-avatar {
+    transform: scale(1.05);
+    transition: transform 0.2s;
+}
+
+.comment-username-link {
+    color: inherit;
+}
+
+.comment-username-link:hover strong {
+    color: var(--primary-color);
+    text-decoration: underline;
+}
+
+/* Links para perfil na tela de conexões */
+.reviewer-avatar-link {
+    text-decoration: none;
+    display: block;
+}
+
+.reviewer-avatar-link:hover .reviewer-avatar,
+.reviewer-avatar-link:hover .reviewer-avatar-img {
+    transform: scale(1.1);
+    transition: transform 0.2s;
+}
+
+.reviewer-name-link {
+    text-decoration: none;
+    color: inherit;
+}
+
+.reviewer-name-link:hover .reviewer-name {
+    color: var(--primary-color);
+    text-decoration: underline;
+}
+
+/* Botão de like com estado curtido */
+.like-btn.liked {
+    background: var(--primary-color);
+    color: white;
 }
 
 .comment-stars {

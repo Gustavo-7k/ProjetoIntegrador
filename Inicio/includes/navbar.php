@@ -125,6 +125,13 @@ $is_admin = isset($is_admin) && $is_admin;
                         <label for="albumCover" class="form-label">Capa do Álbum</label>
                         <input type="file" class="form-control" id="albumCover" name="cover" accept="image/*">
                         <div class="form-text">Formatos: JPG, PNG, GIF, WebP. Máximo 5MB.</div>
+                        <div class="form-text mt-1">
+                            <i class="bi bi-lightbulb text-warning"></i> 
+                            Sugerimos buscar a capa do seu álbum neste site: 
+                            <a href="https://covers.musichoarders.xyz/" target="_blank" rel="noopener noreferrer" class="text-decoration-none">
+                                covers.musichoarders.xyz
+                            </a>
+                        </div>
                         <div id="albumCoverPreview" class="album-cover-preview mt-2"></div>
                     </div>
                 </form>

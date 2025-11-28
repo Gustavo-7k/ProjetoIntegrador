@@ -124,14 +124,17 @@ function renderComment(c){
     const avatarUrl = c.profile_image ? escapeHtml(c.profile_image) : defaultAvatar;
     const md = DOMPurify.sanitize(marked.parse(c.comment));
     const rating = c.rating ? '★'.repeat(c.rating) + '☆'.repeat(5-c.rating) : '';
+    const profileUrl = '/perfil/perfiloutrosusuarios.php?username=' + encodeURIComponent(c.username);
     
     div.innerHTML = `
         <div class="comment-left">
-            <img src="${avatarUrl}" alt="${escapeHtml(c.username)}" class="comment-avatar" onerror="this.src='${defaultAvatar}'">
+            <a href="${profileUrl}" class="comment-avatar-link">
+                <img src="${avatarUrl}" alt="${escapeHtml(c.username)}" class="comment-avatar" onerror="this.src='${defaultAvatar}'">
+            </a>
         </div>
         <div class="comment-content">
             <div class="comment-header">
-                <strong>${escapeHtml(c.username)}</strong>
+                <a href="${profileUrl}" class="comment-username-link"><strong>${escapeHtml(c.username)}</strong></a>
                 ${rating ? `<span class="comment-stars">${rating}</span>` : ''}
                 <span class="comment-date">${new Date(c.created_at).toLocaleDateString('pt-BR')}</span>
             </div>

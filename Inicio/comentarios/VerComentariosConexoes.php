@@ -316,14 +316,19 @@ include '../includes/header.php';
                             <div class="reviewer-info">
                                 <?php 
                                 $hasValidImage = !empty($comentario['profile_image']) && file_exists(__DIR__ . '/../uploads/' . $comentario['profile_image']);
-                                if ($hasValidImage): 
+                                $profileLink = '../perfil/perfiloutrosusuarios.php?username=' . htmlspecialchars($comentario['username']);
                                 ?>
-                                    <img src="../uploads/<?= htmlspecialchars($comentario['profile_image']) ?>" alt="" class="reviewer-avatar-img">
-                                <?php else: ?>
-                                    <div class="reviewer-avatar"><?= htmlspecialchars($comentario['autor_avatar']) ?></div>
-                                <?php endif; ?>
+                                <a href="<?= $profileLink ?>" class="reviewer-avatar-link" onclick="event.stopPropagation();">
+                                    <?php if ($hasValidImage): ?>
+                                        <img src="../uploads/<?= htmlspecialchars($comentario['profile_image']) ?>" alt="" class="reviewer-avatar-img">
+                                    <?php else: ?>
+                                        <div class="reviewer-avatar"><?= htmlspecialchars($comentario['autor_avatar']) ?></div>
+                                    <?php endif; ?>
+                                </a>
                                 <div>
-                                    <span class="reviewer-name"><?= htmlspecialchars($comentario['autor']) ?></span>
+                                    <a href="<?= $profileLink ?>" class="reviewer-name-link" onclick="event.stopPropagation();">
+                                        <span class="reviewer-name"><?= htmlspecialchars($comentario['autor']) ?></span>
+                                    </a>
                                     <span class="review-date"><?= htmlspecialchars($comentario['data']) ?></span>
                                 </div>
                             </div>
@@ -333,10 +338,10 @@ include '../includes/header.php';
                             </div>
                             
                             <div class="review-actions">
-                                <button class="action-btn" onclick="event.preventDefault(); curtirComentario(<?= $comentario['id'] ?>)">
-                                    Curtir (<?= $comentario['likes'] ?? 0 ?>)
+                                <button class="action-btn like-btn" id="like-btn-<?= $comentario['id'] ?>" data-comment-id="<?= $comentario['id'] ?>" data-likes="<?= $comentario['likes'] ?? 0 ?>" onclick="event.preventDefault(); event.stopPropagation(); curtirComentario(<?= $comentario['id'] ?>)">
+                                    Curtir (<span class="like-count"><?= $comentario['likes'] ?? 0 ?></span>)
                                 </button>
-                                <button class="action-btn" onclick="event.preventDefault(); compartilharComentario(<?= $comentario['id'] ?>)">
+                                <button class="action-btn" onclick="event.preventDefault(); event.stopPropagation(); compartilharComentario(<?= $comentario['id'] ?>)">
                                     Compartilhar
                                 </button>
                             </div>
@@ -353,20 +358,32 @@ include '../includes/header.php';
 <?php
 $inline_js = '
 function curtirComentario(comentarioId) {
+    var btn = document.getElementById("like-btn-" + comentarioId);
+    var likeCountSpan = btn.querySelector(".like-count");
+    
     fetch("/api/like-comment.php", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ comment_id: comentarioId })
     })
-    .then(response => response.json())
-    .then(data => {
+    .then(function(response) { return response.json(); })
+    .then(function(data) {
         if (data.success) {
-            mostrarToast("Comentário curtido!");
+            // Atualizar o contador de likes
+            likeCountSpan.textContent = data.total;
+            btn.dataset.likes = data.total;
+            
+            // Adicionar/remover classe de curtido
+            if (data.liked) {
+                btn.classList.add("liked");
+            } else {
+                btn.classList.remove("liked");
+            }
         } else {
-            mostrarToast("Erro ao curtir comentário", "error");
+            mostrarToast(data.message || "Erro ao curtir comentário", "error");
         }
     })
-    .catch(error => {
+    .catch(function(error) {
         console.error("Erro:", error);
         mostrarToast("Erro ao curtir comentário", "error");
     });

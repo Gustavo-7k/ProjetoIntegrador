@@ -92,7 +92,7 @@ $pageTitle = 'Todos os Álbuns - ' . $artista['nome'] . ' - Anthems';
     <div class="container">
         <div class="header">
             <h1 class="page-title">Todos os Álbuns - <?= htmlspecialchars($artista['nome']) ?></h1>
-            <a href="../perfil/perfilartista.php?id=<?= urlencode($artista_nome) ?>" class="back-link">← Voltar</a>
+            <a href="../perfil/perfiloutrosusuarios.php?id=<?= urlencode($artista_nome) ?>" class="back-link">← Voltar</a>
         </div>
         
         <!-- Filtros e Ordenação -->
