@@ -28,7 +28,7 @@ if (!isset($input['comentario_id'], $input['motivo'])) {
 }
 
 $comentario_id = (int)$input['comentario_id'];
-$motivo = sanitizeInput($input['motivo']);
+$motivo = trim($input['motivo']);
 $user_id = $_SESSION['user_id'];
 
 // Validar motivo

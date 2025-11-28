@@ -14,12 +14,12 @@ if (!isset($data['title']) || !isset($data['artist'])) {
     sendJSONResponse(['success' => false, 'message' => 'Dados obrigatórios faltando'], 400);
 }
 
-$title = sanitizeInput($data['title']);
-$artist = sanitizeInput($data['artist']);
+$title = trim($data['title']);
+$artist = trim($data['artist']);
 $release_year = isset($data['release_year']) ? (int)$data['release_year'] : null;
-$genre = isset($data['genre']) ? sanitizeInput($data['genre']) : null;
-$spotify = isset($data['spotify_url']) ? sanitizeInput($data['spotify_url']) : null;
-$apple = isset($data['apple_music_url']) ? sanitizeInput($data['apple_music_url']) : null;
+$genre = isset($data['genre']) ? trim($data['genre']) : null;
+$spotify = isset($data['spotify_url']) ? trim($data['spotify_url']) : null;
+$apple = isset($data['apple_music_url']) ? trim($data['apple_music_url']) : null;
 
 try {
     $pdo = getDBConnection();

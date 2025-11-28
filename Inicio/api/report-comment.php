@@ -15,8 +15,8 @@ if (!$input || !isset($input['comment_id']) || !isset($input['reason'])) {
 
 
 $comment_id = (int)$input['comment_id'];
-$reason = sanitizeInput($input['reason']);
-$description = isset($input['description']) ? sanitizeInput($input['description']) : null;
+$reason = trim($input['reason']);
+$description = isset($input['description']) ? trim($input['description']) : null;
 
 try {
     $pdo = getDBConnection();

@@ -94,7 +94,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['admin_action'])) {
 
 // Processar novo comentário
     if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['novo_comentario'])) {
-        $novo_comentario = sanitizeInput($_POST['comentario']);
+        $novo_comentario = trim($_POST['comentario']);
         
         if (!empty($novo_comentario)) {
             // Inserir no banco de dados

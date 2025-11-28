@@ -26,6 +26,18 @@ try {
         redirectTo(APP_URL . 'inicio.php');
         exit;
     }
+    
+    // Processar caminho da capa
+    $cover = $album_data['cover_image'] ?? '';
+    if ($cover) {
+        if (file_exists(__DIR__ . '/../img/albums/' . $cover)) {
+            $album_data['cover_url'] = '../img/albums/' . $cover;
+        } else {
+            $album_data['cover_url'] = '../img/' . $cover;
+        }
+    } else {
+        $album_data['cover_url'] = '../img/NTHMS.png';
+    }
 } catch (PDOException $e) {
     redirectTo(APP_URL . 'inicio.php');
     exit;
@@ -199,9 +211,10 @@ include '../includes/header.php';
         <div class="row">
             <!-- Capa do álbum (esquerda) -->
             <div class="col-md-5 mb-4 mb-md-0 text-center">
-                <img src="../img/<?php echo htmlspecialchars($album_data['cover_image']); ?>" 
+                <img src="<?php echo htmlspecialchars($album_data['cover_url']); ?>" 
                      alt="Capa do <?php echo htmlspecialchars($album_data['title']); ?>" 
-                     class="comment-album-cover">
+                     class="comment-album-cover"
+                     onerror="this.src='../img/NTHMS.png'">
             </div>
             
             <!-- Área de formulário (direita) -->

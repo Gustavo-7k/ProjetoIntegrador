@@ -20,6 +20,19 @@ try {
         sendJSONResponse(['success' => false, 'message' => 'Álbum não encontrado'], 404);
     }
 
+    // Processar caminho da capa
+    $cover = $album['cover_image'] ?? '';
+    if ($cover) {
+        // Verificar se é álbum novo (em /img/albums/) ou antigo (em /img/)
+        if (file_exists(__DIR__ . '/../img/albums/' . $cover)) {
+            $album['cover_url'] = '/img/albums/' . $cover;
+        } else {
+            $album['cover_url'] = '/img/' . $cover;
+        }
+    } else {
+        $album['cover_url'] = null;
+    }
+
     sendJSONResponse(['success' => true, 'album' => $album]);
 
 } catch (Exception $e) {

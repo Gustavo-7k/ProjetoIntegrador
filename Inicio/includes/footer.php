@@ -1,3 +1,10 @@
+    <!-- Footer -->
+    <footer class="site-footer">
+        <div class="container">
+            <p class="mb-0">Contato do desenvolvedor: <a href="mailto:gu.schenkeloliveira@gmail.com">gu.schenkeloliveira@gmail.com</a></p>
+        </div>
+    </footer>
+
     <!-- Scripts JavaScript -->
     
     <!-- Bootstrap Bundle JS -->

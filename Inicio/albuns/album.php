@@ -81,7 +81,8 @@ async function fetchAlbum(){
     const json = await res.json();
     if (!json.success) return alert(json.message || 'Erro');
     const a = json.album;
-    const coverImg = a.cover_image ? `/img/${escapeHtml(a.cover_image)}` : '/img/NTHMS.png';
+    // Usar cover_url retornado pela API ou fallback
+    const coverImg = a.cover_url || '/img/NTHMS.png';
     document.getElementById('album-info').innerHTML = `
         <div class="album-layout">
             <div class="album-cover">

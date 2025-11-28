@@ -31,13 +31,13 @@ try {
         $stmt->execute([$report['comment_id']]);
 
         $stmt = $pdo->prepare('UPDATE reports SET status = "resolved", reviewed_by = ?, reviewed_at = NOW(), admin_notes = ? WHERE id = ?');
-        $stmt->execute([$_SESSION['user_id'], isset($input['admin_notes']) ? sanitizeInput($input['admin_notes']) : null, $denuncia_id]);
+        $stmt->execute([$_SESSION['user_id'], isset($input['admin_notes']) ? trim($input['admin_notes']) : null, $denuncia_id]);
         $pdo->commit();
 
         sendJSONResponse(['success' => true]);
     } elseif ($acao === 'rejeitar') {
         $stmt = $pdo->prepare('UPDATE reports SET status = "reviewed", reviewed_by = ?, reviewed_at = NOW(), admin_notes = ? WHERE id = ?');
-        $stmt->execute([$_SESSION['user_id'], isset($input['admin_notes']) ? sanitizeInput($input['admin_notes']) : null, $denuncia_id]);
+        $stmt->execute([$_SESSION['user_id'], isset($input['admin_notes']) ? trim($input['admin_notes']) : null, $denuncia_id]);
         sendJSONResponse(['success' => true]);
     } elseif ($acao === 'liberar') {
         // Re-approve comment
@@ -45,7 +45,7 @@ try {
         $stmt = $pdo->prepare('UPDATE comments SET status = "approved" WHERE id = ?');
         $stmt->execute([$report['comment_id']]);
         $stmt = $pdo->prepare('UPDATE reports SET status = "resolved", reviewed_by = ?, reviewed_at = NOW(), admin_notes = ? WHERE id = ?');
-        $stmt->execute([$_SESSION['user_id'], isset($input['admin_notes']) ? sanitizeInput($input['admin_notes']) : null, $denuncia_id]);
+        $stmt->execute([$_SESSION['user_id'], isset($input['admin_notes']) ? trim($input['admin_notes']) : null, $denuncia_id]);
         $pdo->commit();
         sendJSONResponse(['success' => true]);
     } else {

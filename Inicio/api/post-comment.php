@@ -17,7 +17,7 @@ if (!$input || !isset($input['album_id']) || !isset($input['comment'])) {
 
 
 $album_id = (int)$input['album_id'];
-$comment = sanitizeInput($input['comment']);
+$comment = trim($input['comment']);
 
 // Rating deve ser um inteiro entre 1-5, padrão 3 se não fornecido (campo NOT NULL no banco)
 $rating = 3; // valor padrão

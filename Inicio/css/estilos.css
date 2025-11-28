@@ -2168,3 +2168,25 @@
         grid-template-columns: repeat(2, 1fr);
     }
 }
+
+/* ========================================
+   FOOTER
+   ======================================== */
+.site-footer {
+    background-color: var(--primary-color);
+    color: var(--text-white);
+    padding: 15px 0;
+    text-align: center;
+    font-size: 0.9rem;
+    margin-top: auto;
+}
+
+.site-footer a {
+    color: var(--primary-light);
+    text-decoration: none;
+}
+
+.site-footer a:hover {
+    color: var(--text-white);
+    text-decoration: underline;
+}

@@ -436,7 +436,8 @@ include '../includes/header.php';
             
             if (searchTimeout) clearTimeout(searchTimeout);
             
-            if (query.length < 2) {
+            // Permitir busca com @ ou com pelo menos 1 caractere
+            if (query.length < 1) {
                 searchResults.innerHTML = '';
                 searchResults.style.display = 'none';
                 return;
