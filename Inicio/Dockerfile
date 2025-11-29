@@ -62,10 +62,7 @@ RUN mkdir -p /var/www/html/uploads \
     && mkdir -p /var/www/html/logs \
     && mkdir -p /var/www/html/img/albums \
     && chown -R www-data:www-data /var/www/html \
-    && chmod -R 777 /var/www/html \
-    && chmod -R 777 /var/www/html/uploads \
-    && chmod -R 777 /var/www/html/logs \
-    && chmod -R 777 /var/www/html/img \
+    && chmod -R 777 /var/www/html
 
 # Criar .env a partir do .env.example se não existir
 RUN if [ -f /var/www/html/.env.example ] && [ ! -f /var/www/html/.env ]; then \
@@ -84,5 +81,3 @@ EXPOSE 80
 
 # Comando de inicialização
 CMD ["apache2-foreground"]
-
-RUN chmod -R 777 ProjetoIntegrador
