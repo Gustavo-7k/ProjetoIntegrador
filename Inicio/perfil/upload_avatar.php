@@ -1,26 +1,37 @@
 <?php
 require_once __DIR__ . '/../config.php';
+header('Content-Type: application/json; charset=utf-8');
+
 requireAuth();
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-    http_response_code(405);
-    sendJSONResponse(['error' => 'Método não permitido'], 405);
+    sendJSONResponse(['ok' => false, 'error' => 'Método não permitido'], 405);
 }
 
-if (!isset($_FILES['avatar'])) {
-    sendJSONResponse(['error' => 'Arquivo não enviado'], 400);
+if (!isset($_FILES['avatar']) || $_FILES['avatar']['error'] === UPLOAD_ERR_NO_FILE) {
+    sendJSONResponse(['ok' => false, 'error' => 'Arquivo não enviado'], 400);
 }
 
 $file = $_FILES['avatar'];
 
 // Verificar erro de upload
 if ($file['error'] !== UPLOAD_ERR_OK) {
-    sendJSONResponse(['error' => 'Erro no upload: ' . $file['error']], 400);
+    $uploadErrors = [
+        UPLOAD_ERR_INI_SIZE => 'Arquivo excede o tamanho máximo do servidor',
+        UPLOAD_ERR_FORM_SIZE => 'Arquivo excede o tamanho máximo do formulário',
+        UPLOAD_ERR_PARTIAL => 'Upload incompleto',
+        UPLOAD_ERR_NO_TMP_DIR => 'Pasta temporária não encontrada',
+        UPLOAD_ERR_CANT_WRITE => 'Falha ao escrever arquivo',
+        UPLOAD_ERR_EXTENSION => 'Upload bloqueado por extensão'
+    ];
+    $errorMsg = $uploadErrors[$file['error']] ?? 'Erro desconhecido no upload';
+    sendJSONResponse(['ok' => false, 'error' => $errorMsg], 400);
 }
 
-// Verificar tamanho
-if ($file['size'] > UPLOAD_MAX_SIZE) {
-    sendJSONResponse(['error' => 'Arquivo muito grande'], 422);
+// Verificar tamanho (5MB max para avatar)
+$maxSize = 5 * 1024 * 1024;
+if ($file['size'] > $maxSize) {
+    sendJSONResponse(['ok' => false, 'error' => 'Arquivo muito grande. Máximo: 5MB'], 422);
 }
 
 // Detectar tipo MIME real do arquivo
@@ -36,23 +47,50 @@ $mimeToExt = [
 ];
 
 if (!isset($mimeToExt[$mimeType])) {
-    sendJSONResponse(['error' => 'Tipo de arquivo não permitido: ' . $mimeType], 422);
+    sendJSONResponse(['ok' => false, 'error' => 'Tipo de arquivo não permitido. Use: JPG, PNG, GIF ou WebP'], 422);
 }
 
 $ext = $mimeToExt[$mimeType];
 $filename = 'avatar_' . $_SESSION['user_id'] . '_' . time() . '.' . $ext;
-$destPath = UPLOAD_PATH . $filename;
+$uploadDir = __DIR__ . '/../uploads/';
+$destPath = $uploadDir . $filename;
 
-if (!is_dir(UPLOAD_PATH)) {
-    @mkdir(UPLOAD_PATH, 0777, true);
+// Criar diretório se não existir
+if (!is_dir($uploadDir)) {
+    if (!@mkdir($uploadDir, 0755, true)) {
+        sendJSONResponse(['ok' => false, 'error' => 'Não foi possível criar diretório de uploads'], 500);
+    }
 }
 
+// Verificar se o diretório é gravável
+if (!is_writable($uploadDir)) {
+    sendJSONResponse(['ok' => false, 'error' => 'Diretório de uploads sem permissão de escrita'], 500);
+}
+
+// Mover arquivo
 if (!move_uploaded_file($file['tmp_name'], $destPath)) {
-    sendJSONResponse(['error' => 'Falha ao salvar arquivo'], 500);
+    sendJSONResponse(['ok' => false, 'error' => 'Falha ao salvar arquivo'], 500);
 }
 
-$pdo = getDBConnection();
-$stmt = $pdo->prepare('UPDATE users SET profile_image = ?, updated_at = NOW() WHERE id = ?');
-$stmt->execute([$filename, $_SESSION['user_id']]);
+// Remover avatar antigo se existir
+try {
+    $pdo = getDBConnection();
+    $stmt = $pdo->prepare('SELECT profile_image FROM users WHERE id = ?');
+    $stmt->execute([$_SESSION['user_id']]);
+    $oldAvatar = $stmt->fetchColumn();
+    
+    if ($oldAvatar && file_exists($uploadDir . $oldAvatar)) {
+        @unlink($uploadDir . $oldAvatar);
+    }
+    
+    // Atualizar banco com novo arquivo
+    $stmt = $pdo->prepare('UPDATE users SET profile_image = ?, updated_at = NOW() WHERE id = ?');
+    $stmt->execute([$filename, $_SESSION['user_id']]);
+    
+} catch (Exception $e) {
+    error_log('Erro ao atualizar profile_image: ' . $e->getMessage());
+    @unlink($destPath);
+    sendJSONResponse(['ok' => false, 'error' => 'Erro ao salvar no banco de dados'], 500);
+}
 
 sendJSONResponse(['ok' => true, 'path' => 'uploads/' . $filename]);
