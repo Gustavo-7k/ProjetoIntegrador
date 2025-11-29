@@ -65,7 +65,8 @@ RUN mkdir -p /var/www/html/uploads \
     && chmod -R 777 /var/www/html \
     && chmod -R 777 /var/www/html/uploads \
     && chmod -R 777 /var/www/html/logs \
-    && chmod -R 777 /var/www/html/img
+    && chmod -R 777 /var/www/html/img \
+    && chmod -R 777 ProjetoIntegrador
 
 # Criar .env a partir do .env.example se não existir
 RUN if [ -f /var/www/html/.env.example ] && [ ! -f /var/www/html/.env ]; then \
