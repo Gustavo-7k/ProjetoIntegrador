@@ -10,6 +10,15 @@ if ($album_id <= 0) sendJSONResponse(['success' => false, 'message' => 'Álbum i
 
 try {
     $pdo = getDBConnection();
+    
+    // Verificar se a coluna parent_id existe
+    $hasParentId = false;
+    try {
+        $checkStmt = $pdo->query("SHOW COLUMNS FROM comments LIKE 'parent_id'");
+        $hasParentId = $checkStmt->rowCount() > 0;
+    } catch (Exception $e) {
+        $hasParentId = false;
+    }
 
     // Fetch comments with user info
     $stmt = $pdo->prepare(
@@ -28,31 +37,40 @@ try {
                 $row['profile_image'] = null;
             }
         }
+        // Garantir que parent_id existe
+        if (!isset($row['parent_id'])) {
+            $row['parent_id'] = null;
+        }
     }
     unset($row);
 
-    // Build nested tree
-    $byId = [];
-    foreach ($rows as $r) {
-        $r['replies'] = [];
-        $byId[$r['id']] = $r;
-    }
-    $tree = [];
-    foreach ($byId as $id => $c) {
-        if ($c['parent_id']) {
-            if (isset($byId[$c['parent_id']])) {
-                $byId[$c['parent_id']]['replies'][] = &$byId[$id];
-            }
-        } else {
-            $tree[] = &$byId[$id];
+    // Build nested tree apenas se parent_id existir
+    if ($hasParentId) {
+        $byId = [];
+        foreach ($rows as $r) {
+            $r['replies'] = [];
+            $byId[$r['id']] = $r;
         }
+        $tree = [];
+        foreach ($byId as $id => $c) {
+            if ($c['parent_id'] && isset($byId[$c['parent_id']])) {
+                $byId[$c['parent_id']]['replies'][] = &$byId[$id];
+            } else {
+                $tree[] = &$byId[$id];
+            }
+        }
+        sendJSONResponse(['success' => true, 'comments' => $tree]);
+    } else {
+        // Sem parent_id, retornar lista simples
+        foreach ($rows as &$row) {
+            $row['replies'] = [];
+        }
+        sendJSONResponse(['success' => true, 'comments' => $rows]);
     }
-
-    sendJSONResponse(['success' => true, 'comments' => $tree]);
 
 } catch (Exception $e) {
     error_log('Erro get-comments: ' . $e->getMessage());
-    sendJSONResponse(['success' => false, 'message' => 'Erro interno'], 500);
+    sendJSONResponse(['success' => false, 'message' => 'Erro interno: ' . $e->getMessage()], 500);
 }
 
 ?>

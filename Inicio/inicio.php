@@ -174,10 +174,11 @@ $inline_css = '
 
 .guest-message {
     text-align: center;
-    padding: 4rem 2rem;
+    padding: 3rem 2rem;
     background: linear-gradient(135deg, var(--primary-light) 0%, #e8d4ff 100%);
     border-radius: 20px;
-    margin-top: 2rem;
+    margin: 0 auto 8rem auto;
+    max-width: 600px;
 }
 
 .guest-message h2 {

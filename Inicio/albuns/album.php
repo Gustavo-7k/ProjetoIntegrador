@@ -116,16 +116,25 @@ async function fetchComments(){
     json.comments.forEach(c => container.appendChild(renderComment(c)));
 }
 
-function renderComment(c){
+function renderComment(c, isReply = false){
     const div = document.createElement('div');
-    div.className = 'comment-item';
+    div.className = 'comment-item' + (isReply ? ' comment-reply' : '');
     div.id = 'comment-' + c.id;
     div.setAttribute('data-comment-id', c.id);
+    div.setAttribute('data-username', c.username);
     const defaultAvatar = 'data:image/svg+xml,' + encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="50" cy="50" r="50" fill="#c29fef"/><circle cx="50" cy="40" r="18" fill="#170045"/><ellipse cx="50" cy="85" rx="30" ry="25" fill="#170045"/></svg>');
     const avatarUrl = c.profile_image ? escapeHtml(c.profile_image) : defaultAvatar;
-    const md = DOMPurify.sanitize(marked.parse(c.comment));
+    
+    // Processar menções no texto do comentário
+    let commentText = c.comment;
+    commentText = commentText.replace(/@(\w+)/g, '<span class="mention">@$1</span>');
+    const md = DOMPurify.sanitize(marked.parse(commentText));
+    
     const rating = c.rating ? '★'.repeat(c.rating) + '☆'.repeat(5-c.rating) : '';
     const profileUrl = '/perfil/perfiloutrosusuarios.php?username=' + encodeURIComponent(c.username);
+    
+    const isLoggedIn = <?= isLoggedIn() ? 'true' : 'false' ?>;
+    const replyButton = isLoggedIn ? `<button data-id="${c.id}" data-username="${escapeHtml(c.username)}" class="btn-action reply-comment">Responder</button>` : '';
     
     div.innerHTML = `
         <div class="comment-left">
@@ -142,8 +151,18 @@ function renderComment(c){
             <div class="comment-text">${md}</div>
             <div class="comment-actions">
                 <button data-id="${c.id}" class="btn-action like-comment">👍 ${c.likes_count||0}</button>
-                <button data-id="${c.id}" class="btn-action reply-comment">Responder</button>
+                ${replyButton}
                 <button data-id="${c.id}" class="btn-action report-comment">Denunciar</button>
+            </div>
+            <div class="reply-form-container" id="reply-form-${c.id}" style="display: none;">
+                <div class="reply-form">
+                    <div class="reply-mention">Respondendo a <strong>@${escapeHtml(c.username)}</strong></div>
+                    <textarea class="reply-input" placeholder="Escreva sua resposta..." rows="2"></textarea>
+                    <div class="reply-buttons">
+                        <button class="btn-cancel-reply" data-id="${c.id}">Cancelar</button>
+                        <button class="btn-submit-reply" data-id="${c.id}" data-username="${escapeHtml(c.username)}">Enviar</button>
+                    </div>
+                </div>
             </div>
         </div>
     `;
@@ -152,7 +171,7 @@ function renderComment(c){
         const repliesContainer = document.createElement('div');
         repliesContainer.className = 'replies-list';
         c.replies.forEach(r => {
-            repliesContainer.appendChild(renderComment(r));
+            repliesContainer.appendChild(renderComment(r, true));
         });
         div.appendChild(repliesContainer);
     }
@@ -187,10 +206,62 @@ document.addEventListener('click', async (ev) => {
     if (ev.target.closest('.reply-comment')){
         const btn = ev.target.closest('.reply-comment');
         const id = btn.getAttribute('data-id');
-        const txt = prompt('Escreva sua resposta:');
-        if (!txt) return;
-        const res = await fetch('/api/post-comment.php', {method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({album_id:albumId, comment:txt, parent_id: id})});
-        const j = await res.json(); if (j.success) fetchComments(); else alert(j.message||'Erro');
+        
+        // Fechar outros formulários de resposta abertos
+        document.querySelectorAll('.reply-form-container').forEach(form => {
+            form.style.display = 'none';
+        });
+        
+        // Abrir o formulário de resposta
+        const replyForm = document.getElementById('reply-form-' + id);
+        if (replyForm) {
+            replyForm.style.display = 'block';
+            replyForm.querySelector('.reply-input').focus();
+        }
+    }
+    
+    if (ev.target.closest('.btn-cancel-reply')){
+        const btn = ev.target.closest('.btn-cancel-reply');
+        const id = btn.getAttribute('data-id');
+        const replyForm = document.getElementById('reply-form-' + id);
+        if (replyForm) {
+            replyForm.style.display = 'none';
+            replyForm.querySelector('.reply-input').value = '';
+        }
+    }
+    
+    if (ev.target.closest('.btn-submit-reply')){
+        const btn = ev.target.closest('.btn-submit-reply');
+        const id = btn.getAttribute('data-id');
+        const replyForm = document.getElementById('reply-form-' + id);
+        const textarea = replyForm.querySelector('.reply-input');
+        const txt = textarea.value.trim();
+        
+        if (!txt) {
+            alert('Escreva uma resposta');
+            return;
+        }
+        
+        btn.disabled = true;
+        btn.textContent = 'Enviando...';
+        
+        const res = await fetch('/api/post-comment.php', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({album_id: albumId, comment: txt, parent_id: id})
+        });
+        const j = await res.json();
+        
+        if (j.success) {
+            textarea.value = '';
+            replyForm.style.display = 'none';
+            fetchComments();
+        } else {
+            alert(j.message || 'Erro ao enviar resposta');
+        }
+        
+        btn.disabled = false;
+        btn.textContent = 'Enviar';
     }
 
     if (ev.target.closest('.report-comment')){

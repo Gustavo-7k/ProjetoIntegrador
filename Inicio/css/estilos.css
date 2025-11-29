@@ -2190,3 +2190,117 @@
     color: var(--text-white);
     text-decoration: underline;
 }
+
+/* ========================================
+   SISTEMA DE RESPOSTAS - COMENTÁRIOS
+   ======================================== */
+
+/* Respostas aninhadas */
+.replies-list {
+    margin-left: 2.5rem;
+    margin-top: 1rem;
+    border-left: 2px solid var(--primary-light);
+    padding-left: 1rem;
+}
+
+.comment-reply {
+    background-color: rgba(194, 159, 239, 0.05);
+}
+
+/* Menções @usuario */
+.mention {
+    color: var(--primary-color);
+    font-weight: 600;
+    background-color: rgba(194, 159, 239, 0.2);
+    padding: 0.1rem 0.3rem;
+    border-radius: 4px;
+}
+
+/* Formulário de resposta inline */
+.reply-form-container {
+    margin-top: 0.75rem;
+    padding-top: 0.75rem;
+    border-top: 1px solid var(--border-light);
+}
+
+.reply-form {
+    background-color: #f8f9fa;
+    border-radius: 8px;
+    padding: 1rem;
+}
+
+.reply-mention {
+    font-size: 0.85rem;
+    color: #666;
+    margin-bottom: 0.5rem;
+}
+
+.reply-mention strong {
+    color: var(--primary-color);
+}
+
+.reply-input {
+    width: 100%;
+    border: 1px solid var(--border-gray);
+    border-radius: 6px;
+    padding: 0.5rem 0.75rem;
+    font-size: 0.9rem;
+    resize: vertical;
+    min-height: 60px;
+    font-family: inherit;
+}
+
+.reply-input:focus {
+    outline: none;
+    border-color: var(--primary-light);
+    box-shadow: 0 0 0 3px rgba(194, 159, 239, 0.2);
+}
+
+.reply-buttons {
+    display: flex;
+    justify-content: flex-end;
+    gap: 0.5rem;
+    margin-top: 0.75rem;
+}
+
+.btn-cancel-reply {
+    background: none;
+    border: 1px solid var(--border-gray);
+    color: #666;
+    padding: 0.4rem 1rem;
+    border-radius: 6px;
+    font-size: 0.85rem;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.btn-cancel-reply:hover {
+    background-color: #e9ecef;
+}
+
+.btn-submit-reply {
+    background-color: var(--primary-color);
+    border: none;
+    color: white;
+    padding: 0.4rem 1rem;
+    border-radius: 6px;
+    font-size: 0.85rem;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.btn-submit-reply:hover {
+    background-color: #220066;
+}
+
+.btn-submit-reply:disabled {
+    background-color: #999;
+    cursor: not-allowed;
+}
+
+@media (max-width: 768px) {
+    .replies-list {
+        margin-left: 1rem;
+        padding-left: 0.75rem;
+    }
+}

@@ -44,5 +44,11 @@ $is_admin = isset($is_admin) && $is_admin;
     <?php if (isset($inline_css)): ?>
         <style><?php echo $inline_css; ?></style>
     <?php endif; ?>
+    
+    <?php if (isset($additional_js)): ?>
+        <?php foreach ($additional_js as $js): ?>
+            <script src="<?php echo $js; ?>"></script>
+        <?php endforeach; ?>
+    <?php endif; ?>
 </head>
 <body>
