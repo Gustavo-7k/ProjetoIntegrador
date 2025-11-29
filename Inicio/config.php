@@ -12,7 +12,7 @@ if (!ob_get_level()) {
 define('DB_HOST', getenv('DB_HOST') ?: 'anthems-db');
 define('DB_NAME', getenv('DB_DATABASE') ?: 'anthems_db');
 define('DB_USER', getenv('DB_USERNAME') ?: 'anthems_user');
-define('DB_PASS', getenv('DB_PASSWORD') ?: 'anthems_password');
+define('DB_PASS', getenv('DB_PASSWORD') ?: 'change_this_user_please');
 define('DB_CHARSET', 'utf8mb4');
 
 // Configurações da aplicação
