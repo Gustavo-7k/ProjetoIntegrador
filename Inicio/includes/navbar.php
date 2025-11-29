@@ -2,7 +2,10 @@
 require_once __DIR__ . '/../config.php';
 $base_path = isset($base_path) ? $base_path : '';
 $active_page = isset($active_page) ? $active_page : '';
-$is_admin = isset($is_admin) && $is_admin;
+
+// Verificar se o usuário é admin automaticamente
+$currentUserNav = isLoggedIn() ? getCurrentUser() : null;
+$is_admin = $currentUserNav && isset($currentUserNav['is_admin']) && $currentUserNav['is_admin'];
 ?>
 
 <nav class="navbar navbar-expand-lg navbar-dark navbar-custom">

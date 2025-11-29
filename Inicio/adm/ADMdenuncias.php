@@ -13,282 +13,517 @@ if (!$usuario || !$usuario['is_admin']) {
     exit;
 }
 
-// Buscar denúncias pendentes do banco
+// Filtro de status
+$statusFilter = isset($_GET['status']) ? $_GET['status'] : 'pending';
+$validStatuses = ['pending', 'reviewed', 'resolved', 'all'];
+if (!in_array($statusFilter, $validStatuses)) {
+    $statusFilter = 'pending';
+}
+
+// Buscar denúncias do banco
 try {
     $pdo = getDBConnection();
-    $stmt = $pdo->prepare('SELECT r.id, r.reason, r.description, r.status, r.created_at, u.username as reporter, c.comment as commented_text, cu.username as comment_author FROM reports r JOIN users u ON r.reporter_id = u.id JOIN comments c ON r.comment_id = c.id JOIN users cu ON c.user_id = cu.id WHERE r.status = "pending" ORDER BY r.created_at DESC');
-    $stmt->execute();
+    
+    $sql = 'SELECT r.id, r.reason, r.description, r.status, r.created_at, r.admin_notes,
+                   u.username as reporter_username, u.profile_image as reporter_avatar,
+                   c.comment as comment_text, c.id as comment_id,
+                   cu.username as comment_author, cu.profile_image as author_avatar,
+                   a.title as album_title, a.id as album_id
+            FROM reports r 
+            JOIN users u ON r.reporter_id = u.id 
+            JOIN comments c ON r.comment_id = c.id 
+            JOIN users cu ON c.user_id = cu.id
+            JOIN albums a ON c.album_id = a.id';
+    
+    if ($statusFilter !== 'all') {
+        $sql .= ' WHERE r.status = ?';
+    }
+    
+    $sql .= ' ORDER BY r.created_at DESC';
+    
+    $stmt = $pdo->prepare($sql);
+    if ($statusFilter !== 'all') {
+        $stmt->execute([$statusFilter]);
+    } else {
+        $stmt->execute();
+    }
     $denuncias = $stmt->fetchAll();
+    
+    // Contar denúncias pendentes
+    $stmtCount = $pdo->query('SELECT COUNT(*) FROM reports WHERE status = "pending"');
+    $pendingCount = $stmtCount->fetchColumn();
+    
 } catch (Exception $e) {
     error_log('Erro ADMdenuncias: ' . $e->getMessage());
     $denuncias = [];
+    $pendingCount = 0;
 }
 
-$pageTitle = 'Denúncias - Administração - Anthems';
-?>
-<!DOCTYPE html>
-<html lang="pt-BR">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title><?= htmlspecialchars($pageTitle) ?></title>
-    <link rel="icon" type="image/png" href="../img/NTHMSnavcon.png">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="../css/estilos.css" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Medula+One&display=swap" rel="stylesheet">
-    <!-- CSRF meta removed -->
-</head>
-<body>
-    <?php include __DIR__ . '/../includes/header.php'; ?>
+// Configurações da página para o header.php
+$page_title = 'Denúncias - Administração | NTHMS';
+$active_page = 'admin-denuncias';
+$base_path = '../';
+$is_admin = true;
+
+include __DIR__ . '/../includes/header.php';
+include __DIR__ . '/../includes/navbar.php';
+
+// Função para formatar data relativa
+function timeAgo($datetime) {
+    $now = new DateTime();
+    $ago = new DateTime($datetime);
+    $diff = $now->diff($ago);
     
-    <!-- Admin Navbar -->
-    <nav class="navbar navbar-expand-lg navbar-dark" style="background-color: #170045;">
-        <div class="container">
-            <a class="navbar-brand" href="../inicio.php" style="position: relative; display: inline-block; font-family: 'Medula One', sans-serif; font-size: 40px;">
-                <img src="../img/discosemfundo.png" alt="Logo" style="height: 57px; position: absolute; top: 7px; left: 0; z-index: 0;">
-                <span style="position: relative; z-index: 1; color: white; right: 15px;">anthems</span>
-            </a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
-                    <li class="nav-item"><a class="nav-link active" aria-current="page" href="#">Denúncias</a></li>
-                    <li class="nav-item"><a class="nav-link" href="ADMtelainicial.php">Início</a></li>
-                    <li class="nav-item"><a class="nav-link" href="../comentarios/VerComentariosConexoes.php">Conexões</a></li>
-                    <li class="nav-item"><a class="nav-link" href="../comentarios/novocomentario.php">Novo Comentário</a></li>
-                    <li class="nav-item"><a class="nav-link" href="../perfil/perfil.php">Usuário</a></li>
-                    <!-- Chat removed -->
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
-                            <img src="../img/notificacaoicon.png" alt="Notificações" style="height: 30px; margin-bottom: 3px;">
-                        </a>
-                        <div class="dropdown-menu dropdown-menu-end" style="width: 300px; padding: 0;">
-                            <div style="padding: 10px 15px; border-bottom: 1px solid #dee2e6;">
-                                <h6 class="mb-0">Notificações</h6>
-                            </div>
-                            <div style="padding: 20px; text-align: center;">
-                                <p class="text-muted mb-0">Você não tem notificações</p>
-                            </div>
-                            <div style="padding: 10px 15px; border-top: 1px solid #dee2e6; text-align: center;">
-                                <a href="../notificacoes/todasnotificacoes.php" class="text-primary">Ver todas</a>
-                            </div>
-                        </div>
-                    </li>
-                </ul>
-            </div>
+    if ($diff->y > 0) return $diff->y . ' ano' . ($diff->y > 1 ? 's' : '') . ' atrás';
+    if ($diff->m > 0) return $diff->m . ' mês' . ($diff->m > 1 ? 'es' : '') . ' atrás';
+    if ($diff->d > 0) return $diff->d . ' dia' . ($diff->d > 1 ? 's' : '') . ' atrás';
+    if ($diff->h > 0) return $diff->h . ' hora' . ($diff->h > 1 ? 's' : '') . ' atrás';
+    if ($diff->i > 0) return $diff->i . ' minuto' . ($diff->i > 1 ? 's' : '') . ' atrás';
+    return 'agora';
+}
+
+// Função para traduzir motivo
+function translateReason($reason) {
+    $reasons = [
+        'spam' => 'Spam',
+        'hate_speech' => 'Discurso de ódio',
+        'harassment' => 'Assédio',
+        'inappropriate' => 'Conteúdo inapropriado',
+        'other' => 'Outro'
+    ];
+    return $reasons[$reason] ?? $reason;
+}
+
+// Função para traduzir status
+function translateStatus($status) {
+    $statuses = [
+        'pending' => 'Pendente',
+        'reviewed' => 'Revisado',
+        'resolved' => 'Resolvido'
+    ];
+    return $statuses[$status] ?? $status;
+}
+
+// Função para cor do badge de status
+function statusBadgeClass($status) {
+    $classes = [
+        'pending' => 'bg-warning text-dark',
+        'reviewed' => 'bg-info',
+        'resolved' => 'bg-success'
+    ];
+    return $classes[$status] ?? 'bg-secondary';
+}
+?>
+
+<main class="admin-reports-page">
+    <div class="container py-4">
+        <!-- Cabeçalho -->
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h1 class="page-title">
+                <span style="color: #c29fef;">⚠️</span> Gerenciar Denúncias
+                <?php if ($pendingCount > 0): ?>
+                    <span class="badge bg-danger ms-2"><?= $pendingCount ?> pendente<?= $pendingCount > 1 ? 's' : '' ?></span>
+                <?php endif; ?>
+            </h1>
+            <a href="ADMtelainicial.php" class="btn btn-outline-light">← Voltar ao Admin</a>
         </div>
-    </nav>
-
-    <?php include __DIR__ . '/../includes/chat-sidebar.php'; ?>
-
-    <!-- Denúncias Content -->
-    <div class="notification-container">
-        <div class="notification-header">
-            Denúncias Pendentes
-            <span class="badge bg-danger"><?= count($denuncias) ?></span>
+        
+        <!-- Filtros -->
+        <div class="filter-tabs mb-4">
+            <a href="?status=pending" class="filter-tab <?= $statusFilter === 'pending' ? 'active' : '' ?>">
+                Pendentes
+            </a>
+            <a href="?status=reviewed" class="filter-tab <?= $statusFilter === 'reviewed' ? 'active' : '' ?>">
+                Revisados
+            </a>
+            <a href="?status=resolved" class="filter-tab <?= $statusFilter === 'resolved' ? 'active' : '' ?>">
+                Resolvidos
+            </a>
+            <a href="?status=all" class="filter-tab <?= $statusFilter === 'all' ? 'active' : '' ?>">
+                Todos
+            </a>
         </div>
         
         <!-- Lista de Denúncias -->
-        <div class="notification-list">
-            <?php foreach ($denuncias as $denuncia): ?>
-                <div class="notification-item admin-report-item" data-report-id="<?= $denuncia['id'] ?>">
-                    <img src="<?= htmlspecialchars($denuncia['avatar']) ?>" alt="Avatar" class="notification-avatar">
-                    <div class="notification-content">
-                        <div class="notification-title">
-                            <?= htmlspecialchars($denuncia['denunciante']) ?> enviou uma denúncia
-                            <span class="report-type-badge"><?= htmlspecialchars($denuncia['motivo']) ?></span>
-                        </div>
-                        <div class="notification-time"><?= htmlspecialchars($denuncia['tempo']) ?></div>
-                    </div>
-                    <div class="admin-actions">
-                        <button class="btn btn-sm btn-primary" onclick="verDenuncia(<?= $denuncia['id'] ?>)">
-                            Ver Detalhes
-                        </button>
-                        <button class="btn btn-sm btn-success" onclick="aprovarDenuncia(<?= $denuncia['id'] ?>)">
-                            Aprovar
-                        </button>
-                        <button class="btn btn-sm btn-danger" onclick="rejeitarDenuncia(<?= $denuncia['id'] ?>)">
-                            Rejeitar
-                        </button>
-                    </div>
-                </div>
-            <?php endforeach; ?>
-        </div>
-    </div>
-
-    <!-- Modal de Detalhes da Denúncia -->
-    <div class="modal fade" id="reportDetailsModal" tabindex="-1">
-        <div class="modal-dialog modal-lg">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">Detalhes da Denúncia</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                </div>
-                <div class="modal-body" id="reportDetailsContent">
-                    <!-- Conteúdo será carregado via AJAX -->
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
-                    <button type="button" class="btn btn-success" onclick="aprovarDenuncia(currentReportId)">Aprovar</button>
-                    <button type="button" class="btn btn-danger" onclick="rejeitarDenuncia(currentReportId)">Rejeitar</button>
-                </div>
+        <?php if (empty($denuncias)): ?>
+            <div class="empty-state">
+                <div class="empty-icon">📭</div>
+                <h3>Nenhuma denúncia encontrada</h3>
+                <p>Não há denúncias <?= $statusFilter !== 'all' ? 'com status "' . translateStatus($statusFilter) . '"' : '' ?> no momento.</p>
             </div>
-        </div>
-    </div>
-
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="../js/anthems.js"></script>
-
-    <script>
-        let currentReportId = null;
-
-        function verDenuncia(reportId) {
-            currentReportId = reportId;
-            
-            // Carregar detalhes da denúncia via AJAX
-            fetch(`../api/denuncia-detalhes.php?id=${reportId}`)
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    document.getElementById('reportDetailsContent').innerHTML = `
-                        <div class="report-details">
-                            <div class="row">
-                                <div class="col-md-6">
-                                    <strong>Denunciante:</strong> ${data.denuncia.denunciante}<br>
-                                    <strong>Data:</strong> ${data.denuncia.data}<br>
-                                    <strong>Tipo:</strong> ${data.denuncia.tipo}
-                                </div>
-                                <div class="col-md-6">
-                                    <strong>Status:</strong> <span class="badge bg-warning">${data.denuncia.status}</span>
+        <?php else: ?>
+            <div class="reports-list">
+                <?php foreach ($denuncias as $denuncia): ?>
+                    <?php
+                    $defaultAvatar = 'data:image/svg+xml,' . rawurlencode('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="50" cy="50" r="50" fill="#c29fef"/><circle cx="50" cy="40" r="18" fill="#170045"/><ellipse cx="50" cy="85" rx="30" ry="25" fill="#170045"/></svg>');
+                    $reporterAvatar = $denuncia['reporter_avatar'] ? htmlspecialchars($denuncia['reporter_avatar']) : $defaultAvatar;
+                    $authorAvatar = $denuncia['author_avatar'] ? htmlspecialchars($denuncia['author_avatar']) : $defaultAvatar;
+                    ?>
+                    <div class="report-card" data-report-id="<?= $denuncia['id'] ?>">
+                        <div class="report-header">
+                            <div class="report-info">
+                                <img src="<?= $reporterAvatar ?>" alt="Avatar" class="report-avatar" onerror="this.src='<?= $defaultAvatar ?>'">
+                                <div>
+                                    <strong>@<?= htmlspecialchars($denuncia['reporter_username']) ?></strong>
+                                    <span class="text-muted">denunciou um comentário</span>
                                 </div>
                             </div>
-                            <hr>
-                            <div class="mt-3">
-                                <strong>Motivo da Denúncia:</strong>
-                                <p class="mt-2">${data.denuncia.descricao}</p>
+                            <div class="report-meta">
+                                <span class="badge <?= statusBadgeClass($denuncia['status']) ?>"><?= translateStatus($denuncia['status']) ?></span>
+                                <span class="report-time"><?= timeAgo($denuncia['created_at']) ?></span>
                             </div>
-                            <hr>
-                            <div class="mt-3">
-                                <strong>Conteúdo Denunciado:</strong>
-                                <div class="p-3 border rounded bg-light mt-2">
-                                    ${data.denuncia.conteudo_denunciado}
+                        </div>
+                        
+                        <div class="report-body">
+                            <div class="report-reason">
+                                <span class="reason-badge"><?= translateReason($denuncia['reason']) ?></span>
+                                <?php if (!empty($denuncia['description'])): ?>
+                                    <p class="reason-description"><?= htmlspecialchars($denuncia['description']) ?></p>
+                                <?php endif; ?>
+                            </div>
+                            
+                            <div class="reported-content">
+                                <div class="content-header">
+                                    <img src="<?= $authorAvatar ?>" alt="Avatar" class="content-avatar" onerror="this.src='<?= $defaultAvatar ?>'">
+                                    <div>
+                                        <strong>@<?= htmlspecialchars($denuncia['comment_author']) ?></strong>
+                                        <span class="text-muted">comentou em</span>
+                                        <a href="../albuns/album.php?id=<?= $denuncia['album_id'] ?>#comment-<?= $denuncia['comment_id'] ?>" class="album-link">
+                                            <?= htmlspecialchars($denuncia['album_title']) ?>
+                                        </a>
+                                    </div>
+                                </div>
+                                <div class="content-text">
+                                    <?= htmlspecialchars($denuncia['comment_text']) ?>
                                 </div>
                             </div>
                         </div>
-                    `;
-                    
-                    // Mostrar modal
-                    new bootstrap.Modal(document.getElementById('reportDetailsModal')).show();
-                } else {
-                    mostrarToast('Erro ao carregar detalhes da denúncia', 'error');
-                }
-            })
-            .catch(error => {
-                console.error('Erro:', error);
-                mostrarToast('Erro ao carregar detalhes da denúncia', 'error');
-            });
+                        
+                        <?php if ($denuncia['status'] === 'pending'): ?>
+                            <div class="report-actions">
+                                <button class="btn btn-success btn-sm" onclick="aprovarDenuncia(<?= $denuncia['id'] ?>)">
+                                    ✓ Aprovar (Remover comentário)
+                                </button>
+                                <button class="btn btn-outline-secondary btn-sm" onclick="rejeitarDenuncia(<?= $denuncia['id'] ?>)">
+                                    ✗ Rejeitar denúncia
+                                </button>
+                                <button class="btn btn-outline-info btn-sm" onclick="verComentario(<?= $denuncia['album_id'] ?>, <?= $denuncia['comment_id'] ?>)">
+                                    👁 Ver no contexto
+                                </button>
+                            </div>
+                        <?php elseif ($denuncia['status'] === 'reviewed'): ?>
+                            <div class="report-actions">
+                                <span class="text-muted">Denúncia foi rejeitada - comentário mantido</span>
+                                <button class="btn btn-outline-success btn-sm" onclick="aprovarDenuncia(<?= $denuncia['id'] ?>)">
+                                    Reconsiderar
+                                </button>
+                            </div>
+                        <?php elseif ($denuncia['status'] === 'resolved'): ?>
+                            <div class="report-actions">
+                                <span class="text-muted">Denúncia aprovada - comentário removido</span>
+                                <button class="btn btn-outline-warning btn-sm" onclick="liberarComentario(<?= $denuncia['id'] ?>)">
+                                    Restaurar comentário
+                                </button>
+                            </div>
+                        <?php endif; ?>
+                    </div>
+                <?php endforeach; ?>
+            </div>
+        <?php endif; ?>
+    </div>
+</main>
+
+<style>
+.admin-reports-page {
+    min-height: calc(100vh - 200px);
+    padding-bottom: 40px;
+}
+
+.page-title {
+    color: #fff;
+    font-size: 1.8rem;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.filter-tabs {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.filter-tab {
+    padding: 8px 20px;
+    border-radius: 20px;
+    background: rgba(194, 159, 239, 0.1);
+    color: #c29fef;
+    text-decoration: none;
+    border: 1px solid rgba(194, 159, 239, 0.3);
+    transition: all 0.3s ease;
+}
+
+.filter-tab:hover {
+    background: rgba(194, 159, 239, 0.2);
+    color: #fff;
+}
+
+.filter-tab.active {
+    background: #c29fef;
+    color: #170045;
+    font-weight: bold;
+}
+
+.empty-state {
+    text-align: center;
+    padding: 60px 20px;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 15px;
+}
+
+.empty-icon {
+    font-size: 4rem;
+    margin-bottom: 20px;
+}
+
+.empty-state h3 {
+    color: #fff;
+    margin-bottom: 10px;
+}
+
+.empty-state p {
+    color: #aaa;
+}
+
+.reports-list {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.report-card {
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 15px;
+    padding: 20px;
+    border: 1px solid rgba(194, 159, 239, 0.2);
+}
+
+.report-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 15px;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.report-info {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.report-avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.report-meta {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.report-time {
+    color: #888;
+    font-size: 0.85rem;
+}
+
+.report-body {
+    margin-bottom: 15px;
+}
+
+.report-reason {
+    margin-bottom: 15px;
+}
+
+.reason-badge {
+    display: inline-block;
+    padding: 4px 12px;
+    background: rgba(220, 53, 69, 0.2);
+    color: #ff6b6b;
+    border-radius: 12px;
+    font-size: 0.85rem;
+    font-weight: 500;
+}
+
+.reason-description {
+    margin-top: 10px;
+    color: #ccc;
+    font-style: italic;
+}
+
+.reported-content {
+    background: rgba(0, 0, 0, 0.3);
+    border-radius: 10px;
+    padding: 15px;
+    border-left: 3px solid #c29fef;
+}
+
+.content-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 10px;
+}
+
+.content-avatar {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.album-link {
+    color: #c29fef;
+    text-decoration: none;
+}
+
+.album-link:hover {
+    text-decoration: underline;
+}
+
+.content-text {
+    color: #ddd;
+    line-height: 1.5;
+    word-break: break-word;
+}
+
+.report-actions {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    align-items: center;
+    padding-top: 15px;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.report-actions .btn {
+    border-radius: 20px;
+}
+
+@media (max-width: 768px) {
+    .report-header {
+        flex-direction: column;
+    }
+    
+    .report-actions {
+        flex-direction: column;
+    }
+    
+    .report-actions .btn {
+        width: 100%;
+    }
+}
+</style>
+
+<script>
+function aprovarDenuncia(reportId) {
+    if (!confirm('Tem certeza que deseja aprovar esta denúncia?\nO comentário será removido da exibição.')) {
+        return;
+    }
+
+    fetch('../api/processar-denuncia.php', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ denuncia_id: reportId, acao: 'aprovar' })
+    })
+    .then(r => r.json())
+    .then(data => {
+        if (data.success) {
+            mostrarToast('Denúncia aprovada! Comentário removido.');
+            setTimeout(() => location.reload(), 1000);
+        } else {
+            mostrarToast(data.message || 'Erro ao processar', 'error');
         }
+    })
+    .catch(() => mostrarToast('Erro ao processar denúncia', 'error'));
+}
 
-        function aprovarDenuncia(reportId) {
-            if (!confirm('Tem certeza que deseja aprovar esta denúncia? Isso resultará em ação contra o conteúdo/usuário denunciado.')) {
-                return;
-            }
+function rejeitarDenuncia(reportId) {
+    if (!confirm('Tem certeza que deseja rejeitar esta denúncia?\nO comentário será mantido.')) {
+        return;
+    }
 
-            fetch('../api/processar-denuncia.php', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({
-                    denuncia_id: reportId,
-                    acao: 'aprovar'
-                })
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    // Remover item da lista
-                    const item = document.querySelector(`[data-report-id="${reportId}"]`);
-                    item.remove();
-                    
-                    // Fechar modal se estiver aberto
-                    const modal = bootstrap.Modal.getInstance(document.getElementById('reportDetailsModal'));
-                    if (modal) modal.hide();
-                    
-                    mostrarToast('Denúncia aprovada com sucesso!');
-                } else {
-                    mostrarToast('Erro ao aprovar denúncia', 'error');
-                }
-            })
-            .catch(error => {
-                console.error('Erro:', error);
-                mostrarToast('Erro ao aprovar denúncia', 'error');
-            });
+    fetch('../api/processar-denuncia.php', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ denuncia_id: reportId, acao: 'rejeitar' })
+    })
+    .then(r => r.json())
+    .then(data => {
+        if (data.success) {
+            mostrarToast('Denúncia rejeitada.');
+            setTimeout(() => location.reload(), 1000);
+        } else {
+            mostrarToast(data.message || 'Erro ao processar', 'error');
         }
+    })
+    .catch(() => mostrarToast('Erro ao processar denúncia', 'error'));
+}
 
-        function rejeitarDenuncia(reportId) {
-            if (!confirm('Tem certeza que deseja rejeitar esta denúncia?')) {
-                return;
-            }
+function liberarComentario(reportId) {
+    if (!confirm('Tem certeza que deseja restaurar este comentário?')) {
+        return;
+    }
 
-            fetch('../api/processar-denuncia.php', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({
-                    denuncia_id: reportId,
-                    acao: 'rejeitar'
-                })
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    // Remover item da lista
-                    const item = document.querySelector(`[data-report-id="${reportId}"]`);
-                    item.remove();
-                    
-                    // Fechar modal se estiver aberto
-                    const modal = bootstrap.Modal.getInstance(document.getElementById('reportDetailsModal'));
-                    if (modal) modal.hide();
-                    
-                    mostrarToast('Denúncia rejeitada');
-                } else {
-                    mostrarToast('Erro ao rejeitar denúncia', 'error');
-                }
-            })
-            .catch(error => {
-                console.error('Erro:', error);
-                mostrarToast('Erro ao rejeitar denúncia', 'error');
-            });
+    fetch('../api/processar-denuncia.php', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ denuncia_id: reportId, acao: 'liberar' })
+    })
+    .then(r => r.json())
+    .then(data => {
+        if (data.success) {
+            mostrarToast('Comentário restaurado!');
+            setTimeout(() => location.reload(), 1000);
+        } else {
+            mostrarToast(data.message || 'Erro ao processar', 'error');
         }
+    })
+    .catch(() => mostrarToast('Erro ao processar', 'error'));
+}
 
-        function mostrarToast(mensagem, tipo = 'success') {
-            const toast = document.createElement('div');
-            toast.className = `toast ${tipo}`;
-            toast.textContent = mensagem;
-            toast.style.cssText = `
-                position: fixed;
-                top: 20px;
-                right: 20px;
-                padding: 15px 20px;
-                background: ${tipo === 'error' ? '#dc3545' : '#28a745'};
-                color: white;
-                border-radius: 5px;
-                z-index: 1050;
-                opacity: 0;
-                transition: opacity 0.3s ease;
-            `;
-            
-            document.body.appendChild(toast);
-            
-            setTimeout(() => toast.style.opacity = '1', 100);
-            setTimeout(() => {
-                toast.style.opacity = '0';
-                setTimeout(() => toast.remove(), 300);
-            }, 3000);
-        }
-    </script>
-</body>
-</html>
+function verComentario(albumId, commentId) {
+    window.open('../albuns/album.php?id=' + albumId + '#comment-' + commentId, '_blank');
+}
+
+function mostrarToast(mensagem, tipo = 'success') {
+    const toast = document.createElement('div');
+    toast.textContent = mensagem;
+    toast.style.cssText = `
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        padding: 15px 25px;
+        background: ${tipo === 'error' ? '#dc3545' : '#28a745'};
+        color: white;
+        border-radius: 8px;
+        z-index: 9999;
+        opacity: 0;
+        transition: opacity 0.3s ease;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+    `;
+    
+    document.body.appendChild(toast);
+    setTimeout(() => toast.style.opacity = '1', 50);
+    setTimeout(() => {
+        toast.style.opacity = '0';
+        setTimeout(() => toast.remove(), 300);
+    }, 3000);
+}
+</script>
+
+<?php include __DIR__ . '/../includes/footer.php'; ?>
