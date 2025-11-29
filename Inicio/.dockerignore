@@ -104,6 +104,3 @@ package-lock.json
 composer.json
 composer.lock
 yarn.lock
-
-# Arquivos específicos do projeto que não devem ir para produção
-listaDeAfazeres.txt
