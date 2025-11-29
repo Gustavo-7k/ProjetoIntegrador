@@ -299,8 +299,18 @@ include '../includes/header.php';
             <?php foreach ($comentarios as $comentario): ?>
                 <a href="../albuns/album.php?id=<?= $comentario['album_id'] ?>#comment-<?= $comentario['id'] ?>" class="review-link">
                     <div class="review-card">
-                        <?php if (!empty($comentario['album_capa'])): ?>
-                            <div class="album-cover-container" style="background-image: url('/img/<?= htmlspecialchars($comentario['album_capa']) ?>');"></div>
+                        <?php if (!empty($comentario['album_capa'])): 
+                            // Verificar em qual pasta a capa existe
+                            $capa = $comentario['album_capa'];
+                            if (file_exists(__DIR__ . '/../img/albums/' . $capa)) {
+                                $capaUrl = '/img/albums/' . $capa;
+                            } elseif (file_exists(__DIR__ . '/../uploads/' . $capa)) {
+                                $capaUrl = '/uploads/' . $capa;
+                            } else {
+                                $capaUrl = '/img/' . $capa;
+                            }
+                        ?>
+                            <div class="album-cover-container" style="background-image: url('<?= htmlspecialchars($capaUrl) ?>');"></div>
                         <?php else: ?>
                             <div class="album-cover-container" style="background: linear-gradient(135deg, var(--primary-color), var(--primary-light)); display: flex; align-items: center; justify-content: center;">
                                 <svg width="50" height="50" fill="white" viewBox="0 0 24 24">

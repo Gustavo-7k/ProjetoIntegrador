@@ -23,10 +23,15 @@ try {
     // Processar caminho da capa
     $cover = $album['cover_image'] ?? '';
     if ($cover) {
-        // Verificar se é álbum novo (em /img/albums/) ou antigo (em /img/)
+        // Verificar em qual pasta a imagem existe
         if (file_exists(__DIR__ . '/../img/albums/' . $cover)) {
             $album['cover_url'] = '/img/albums/' . $cover;
+        } elseif (file_exists(__DIR__ . '/../uploads/' . $cover)) {
+            $album['cover_url'] = '/uploads/' . $cover;
+        } elseif (file_exists(__DIR__ . '/../img/' . $cover)) {
+            $album['cover_url'] = '/img/' . $cover;
         } else {
+            // Fallback: tentar encontrar por prefixo cover_ na pasta uploads
             $album['cover_url'] = '/img/' . $cover;
         }
     } else {
