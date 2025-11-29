@@ -30,7 +30,7 @@ services:
     container_name: anthems-db
     restart: unless-stopped
     ports:
-      - "3306:3306"
+      - "3307:3306"
     environment:
       MYSQL_DATABASE: ${MYSQL_DATABASE:-anthems_db}
       MYSQL_USER: ${MYSQL_USER:-anthems_user}
