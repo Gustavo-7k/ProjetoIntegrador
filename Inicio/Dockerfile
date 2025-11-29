@@ -65,6 +65,12 @@ RUN mkdir -p /var/www/html/uploads \
     && chmod -R 777 /var/www/html/uploads \
     && chmod -R 777 /var/www/html/logs
 
+# Criar .env a partir do .env.example se não existir
+RUN if [ -f /var/www/html/.env.example ] && [ ! -f /var/www/html/.env ]; then \
+        cp /var/www/html/.env.example /var/www/html/.env && \
+        echo ".env criado a partir de .env.example"; \
+    fi
+
 # Definir variáveis de ambiente
 ENV APACHE_DOCUMENT_ROOT=/var/www/html
 ENV PHP_MEMORY_LIMIT=256M
