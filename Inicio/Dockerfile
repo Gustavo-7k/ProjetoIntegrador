@@ -55,15 +55,17 @@ WORKDIR /var/www/html
 # Copiar arquivos do projeto
 COPY . .
 
-# Criar diretórios necessários e definir permissões
+# Criar diretórios necessários e definir permissões totais
 RUN mkdir -p /var/www/html/uploads \
     && mkdir -p /var/www/html/uploads/profiles \
     && mkdir -p /var/www/html/uploads/albums \
     && mkdir -p /var/www/html/logs \
+    && mkdir -p /var/www/html/img/albums \
     && chown -R www-data:www-data /var/www/html \
-    && chmod -R 755 /var/www/html \
+    && chmod -R 777 /var/www/html \
     && chmod -R 777 /var/www/html/uploads \
-    && chmod -R 777 /var/www/html/logs
+    && chmod -R 777 /var/www/html/logs \
+    && chmod -R 777 /var/www/html/img
 
 # Criar .env a partir do .env.example se não existir
 RUN if [ -f /var/www/html/.env.example ] && [ ! -f /var/www/html/.env ]; then \
