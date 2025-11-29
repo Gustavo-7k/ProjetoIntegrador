@@ -1,10 +1,11 @@
 <?php
+header('Content-Type: application/json; charset=utf-8');
+
 require_once '../config.php';
 
 // Verificar se é uma requisição POST
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-    http_response_code(405);
-    die('Método não permitido');
+    sendJSONResponse(['success' => false, 'message' => 'Método não permitido'], 405);
 }
 
 // CSRF validation removed

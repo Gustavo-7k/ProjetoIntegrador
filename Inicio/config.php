@@ -61,6 +61,18 @@ function getDBConnection() {
             $pdo->exec("SET time_zone = '-03:00'");
         } catch (PDOException $e) {
             error_log("Erro de conexão com banco de dados: " . $e->getMessage());
+            // Verificar se é uma requisição que espera JSON
+            $isAjax = !empty($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest';
+            $isApi = strpos($_SERVER['REQUEST_URI'] ?? '', '/api/') !== false;
+            $acceptsJson = strpos($_SERVER['HTTP_ACCEPT'] ?? '', 'application/json') !== false;
+            $isFormSubmit = $_SERVER['REQUEST_METHOD'] === 'POST' && strpos($_SERVER['CONTENT_TYPE'] ?? '', 'multipart/form-data') !== false;
+            
+            if ($isAjax || $isApi || $acceptsJson || $isFormSubmit || $_SERVER['REQUEST_METHOD'] === 'POST') {
+                header('Content-Type: application/json; charset=utf-8');
+                http_response_code(500);
+                echo json_encode(['success' => false, 'message' => 'Erro de conexão com o banco de dados. Verifique se o serviço MySQL está rodando.']);
+                exit;
+            }
             die("Erro interno do servidor. Tente novamente mais tarde.");
         }
     }
