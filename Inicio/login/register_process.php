@@ -8,7 +8,6 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     sendJSONResponse(['success' => false, 'message' => 'Método não permitido'], 405);
 }
 
-// CSRF validation removed
 
 try {
     // Sanitizar e validar dados de entrada

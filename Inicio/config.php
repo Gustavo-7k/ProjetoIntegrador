@@ -1,14 +1,10 @@
 <?php
-/**
- * Configurações gerais da aplicação Anthems
- */
-
 // Iniciar buffer de saída para capturar saídas acidentais (BOM/echo/warnings)
 if (!ob_get_level()) {
     ob_start();
 }
 
-// Configurações do banco de dados (suporta variáveis de ambiente)
+// Configurações do banco de dados
 define('DB_HOST', getenv('DB_HOST') ?: 'anthems-db');
 define('DB_NAME', getenv('DB_DATABASE') ?: 'anthems_db');
 define('DB_USER', getenv('DB_USERNAME') ?: 'anthems_user');
@@ -45,7 +41,7 @@ define('UPLOAD_MAX_SIZE', 5 * 1024 * 1024); // 5MB
 define('UPLOAD_ALLOWED_TYPES', ['jpg', 'jpeg', 'png', 'gif']);
 define('UPLOAD_PATH', __DIR__ . '/uploads/');
 
-// Função para conexão com banco de dados
+    //Função para conexão com banco de dados
 function getDBConnection() {
     static $pdo = null;
     
@@ -80,9 +76,7 @@ function getDBConnection() {
     return $pdo;
 }
 
-// Note: CSRF functionality removed from the project per request.
-
-// Função para sanitizar entrada
+    //Função para sanitizar entrada
 function sanitizeInput($input) {
     return htmlspecialchars(trim($input), ENT_QUOTES, 'UTF-8');
 }
@@ -92,12 +86,12 @@ function isValidEmail($email) {
     return filter_var($email, FILTER_VALIDATE_EMAIL) !== false;
 }
 
-// Função para hash de senha
+    //Função para hash de senha
 function hashPassword($password) {
     return password_hash($password, PASSWORD_DEFAULT);
 }
 
-// Função para verificar senha
+    //Função para verificar senha
 function verifyPassword($password, $hash) {
     return password_verify($password, $hash);
 }
@@ -124,22 +118,23 @@ function redirectTo($url, $statusCode = 302) {
     exit;
 }
 
-// Função para verificar se usuário está logado
+    //Função para verificar se usuário está logado
 function isLoggedIn() {
     return isset($_SESSION['user_id']) && !empty($_SESSION['user_id']);
 }
 
-// Função para verificar se usuário é admin
+    //Função para verificar se usuário é admin
 function isAdmin() {
     return isset($_SESSION['is_admin']) && $_SESSION['is_admin'] === true;
 }
 
-// Função para obter dados do usuário atual
+    //Função para obter dados do usuário atual
 function getCurrentUser() {
     if (!isLoggedIn()) {
         return null;
     }
     
+    //conexão com banco
     $pdo = getDBConnection();
     $stmt = $pdo->prepare("SELECT * FROM users WHERE id = ? AND active = 1");
     $stmt->execute([$_SESSION['user_id']]);
@@ -152,18 +147,15 @@ function e($string) {
     return htmlspecialchars($string, ENT_QUOTES, 'UTF-8');
 }
 
-// Função para formatar data
+    //Função para formatar data
 function formatDate($date, $format = 'd/m/Y H:i') {
     return date($format, strtotime($date));
 }
 
-// Função para enviar resposta JSON
+    //Função para enviar resposta JSON
 function sendJSONResponse($data, $statusCode = 200) {
     http_response_code($statusCode);
 
-    // Limpar quaisquer buffers de saída para evitar conteúdo extra antes do JSON
-    // Temporariamente desativar a exibição de erros para prevenir que avisos/notices
-    // sejam emitidos antes do JSON (o que quebraria o parse no cliente).
     $displayErrors = ini_get('display_errors');
     $oldErrorReporting = error_reporting();
     ini_set('display_errors', '0');
@@ -182,7 +174,7 @@ function sendJSONResponse($data, $statusCode = 200) {
     exit;
 }
 
-// Função para validar upload de arquivo
+    //Função para validar upload de arquivo
 function validateUpload($file) {
     $errors = [];
     
